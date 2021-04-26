@@ -2,11 +2,9 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingUser;
-import com.ss.utopia.entity.Route;
 import com.ss.utopia.entity.User;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
