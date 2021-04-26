@@ -1,6 +1,8 @@
 package com.ss.utopia.dao;
 
+import com.ss.utopia.entity.Route;
 import com.ss.utopia.entity.UserRole;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,14 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UserRoleDAO extends BaseDAO<UserRole> {
-
-    public UserRoleDAO(Connection conn) {
-        super(conn);
-    }
+public class UserRoleDAO extends BaseDAO implements ResultSetExtractor<List<UserRole>> {
 
     public List<UserRole> getAllUserRoles() throws SQLException, ClassNotFoundException {
-        return read("SELECT * FROM user_role", null);
+        return jdbcTemplate.query("SELECT * FROM user_role", this);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Flight;
+import com.ss.utopia.entity.Route;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,55 +10,47 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlightDAO extends BaseDAO<Flight>{
-
-    public FlightDAO(Connection conn) {
-        super(conn);
-    }
+public class FlightDAO extends BaseDAO implements ResultSetExtractor<List<Flight>> {
 
     public Integer addFlight(Flight flight) throws SQLException, ClassNotFoundException {
         Integer key = getAllFlights().get(getAllFlights().size() - 1).getId() + 1;
-        save("INSERT INTO flight(id, route_id, airplane_id, departure_time, reserved_seats," +
+        jdbcTemplate.update("INSERT INTO flight(id, route_id, airplane_id, departure_time, reserved_seats," +
                 " seat_price) VALUES(?, ?, ?, ?, ?, ?)",
-                new Object[]{
-                        key,
-                        flight.getRoute().getId(),
-                        flight.getAirplane().getId(),
-                        flight.getDepartTime(),
-                        flight.getReservedSeats(),
-                        flight.getSeatPrice()
-        });
+                key,
+                flight.getRoute().getId(),
+                flight.getAirplane().getId(),
+                flight.getDepartTime(),
+                flight.getReservedSeats(),
+                flight.getSeatPrice());
 
         flight.setId(key);
         return key;
     }
 
     public void updateFlight(Flight flight) throws SQLException, ClassNotFoundException{
-        save("UPDATE flight SET route_id = ?, airplane_id = ?, departure_time = ?, reserved_seats = ?, " +
-                "seat_price = ? WHERE id = ?", new Object[]{
-           flight.getRoute().getId(),
-           flight.getAirplane().getId(),
-           flight.getDepartTime(),
-           flight.getReservedSeats(),
-           flight.getSeatPrice(),
-                flight.getId()
-        });
+        jdbcTemplate.update("UPDATE flight SET route_id = ?, airplane_id = ?, departure_time = ?, reserved_seats = ?, " +
+                "seat_price = ? WHERE id = ?", flight.getRoute().getId(),
+                flight.getAirplane().getId(),
+                flight.getDepartTime(),
+                flight.getReservedSeats(),
+                flight.getSeatPrice(),
+                flight.getId());
     }
 
     public void deleteFlight(Flight flight) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM flight WHERE id = ?", new Object[]{flight.getId()});
+        jdbcTemplate.update("DELETE FROM flight WHERE id = ?", flight.getId());
     }
 
     public Flight getFlightFromId(Integer id) throws SQLException, ClassNotFoundException {
-        List<Flight> flights = read("SELECT * FROM flight WHERE id = ?", new Object[]{id});
+        List<Flight> flights = jdbcTemplate.query("SELECT * FROM flight WHERE id = ?", new Object[]{id},this);
 
-        if(flights.size() > 0)
+        if(flights != null && flights.size() > 0)
             return flights.get(0);
         return null;
     }
 
     public List<Flight> getAllFlights() throws SQLException, ClassNotFoundException{
-        return read("SELECT * FROM flight", null);
+        return jdbcTemplate.query("SELECT * FROM flight", this);
     }
 
     @Override

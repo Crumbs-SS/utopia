@@ -1,13 +1,11 @@
 package com.ss.utopia.dao.tests;
 
 import com.ss.utopia.dao.AirplaneDAO;
-import com.ss.utopia.dao.AirportDAO;
 import com.ss.utopia.dao.FlightDAO;
 import com.ss.utopia.dao.RouteDAO;
 import com.ss.utopia.entity.Airplane;
 import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.Route;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

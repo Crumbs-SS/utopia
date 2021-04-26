@@ -1,10 +1,6 @@
 package com.ss.utopia.entity;
 
 
-import com.ss.utopia.dao.BookingDAO;
-import com.ss.utopia.service.ConnectionUtil;
-
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -51,7 +47,7 @@ public class BookingPayment {
                 '}';
     }
 
-    public static BookingPayment toObject(ResultSet rs) throws SQLException, ClassNotFoundException {
+    public static BookingPayment toObject(ResultSet rs) throws SQLException {
         Integer bookingId = rs.getInt("booking_id");
         String stripeId = rs.getString("stripe_id");
         Boolean refunded = rs.getBoolean("refunded");

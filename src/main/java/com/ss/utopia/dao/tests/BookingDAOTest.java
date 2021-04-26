@@ -2,7 +2,6 @@ package com.ss.utopia.dao.tests;
 
 import com.ss.utopia.dao.BookingDAO;
 import com.ss.utopia.entity.Booking;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

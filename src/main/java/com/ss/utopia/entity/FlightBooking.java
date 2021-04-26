@@ -1,11 +1,5 @@
 package com.ss.utopia.entity;
 
-import com.ss.utopia.dao.BookingDAO;
-import com.ss.utopia.dao.FlightDAO;
-import com.ss.utopia.service.ConnectionUtil;
-
-import java.awt.print.Book;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,7 +28,7 @@ public class FlightBooking {
         this.booking = booking;
     }
 
-    public static FlightBooking toObject(ResultSet rs) throws SQLException, ClassNotFoundException {
+    public static FlightBooking toObject(ResultSet rs) throws SQLException{
 
 
         Integer flightId = rs.getInt("flight_id");

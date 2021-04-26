@@ -1,6 +1,8 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.AirplaneType;
+import com.ss.utopia.entity.Route;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,42 +10,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AirplaneTypeDAO extends BaseDAO<AirplaneType>{
+public class AirplaneTypeDAO extends BaseDAO implements ResultSetExtractor<List<AirplaneType>> {
 
-    public AirplaneTypeDAO(Connection conn) {
-        super(conn);
+    public Integer addAirplaneType(AirplaneType airplaneType) {
+        return jdbcTemplate.update("INSERT INTO airplane_type(id, max_capacity) VALUES (?, ?)", airplaneType.getId(),
+                airplaneType.getMaxCapacity());
     }
 
-    public Integer addAirplaneType(AirplaneType airplaneType) throws SQLException, ClassNotFoundException {
-        Integer key = saveWithPK("INSERT INTO airplane_type(id, max_capacity) VALUES (?, ?)", new Object[]{
-           airplaneType.getId(),
-           airplaneType.getMaxCapacity()
-        });
-        airplaneType.setId(key);
-        return key;
+    public void updateAirplaneType(AirplaneType airplaneType) {
+        jdbcTemplate.update("UPDATE airplane_type SET max_capacity = ? WHERE id = ?", airplaneType.getMaxCapacity(),
+                airplaneType.getId());
     }
 
-    public void updateAirplaneType(AirplaneType airplaneType) throws SQLException, ClassNotFoundException {
-        save("UPDATE airplane_type SET max_capacity = ? WHERE id = ?", new Object[]{
-                airplaneType.getMaxCapacity(),
-                airplaneType.getId()
-        });
+    public void deleteAirplaneType(AirplaneType airplaneType) {
+        jdbcTemplate.update("DELETE FROM airplane_type WHERE id = ?", airplaneType.getId());
     }
 
-    public void deleteAirplaneType(AirplaneType airplaneType) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM airplane_type WHERE id = ?", new Object[]{airplaneType.getId()});
-    }
+    public AirplaneType getAirplaneTypeByID(Integer id) {
+       List<AirplaneType> airplaneTypes =  jdbcTemplate.query("SELECT * FROM airplane_type WHERE id = ?", new Object[]{id},this);
 
-    public AirplaneType getAirplaneTypeByID(Integer id) throws SQLException, ClassNotFoundException {
-       List<AirplaneType> airplaneTypes =  read("SELECT * FROM airplane_type WHERE id = ?", new Object[]{id});
-
-       if(airplaneTypes.size() > 0)
+       if(airplaneTypes != null && airplaneTypes.size() > 0)
            return airplaneTypes.get(0);
        return null;
     }
 
-    public List<AirplaneType> getAllAirplaneTypes() throws SQLException, ClassNotFoundException{
-        return read("SELECT * FROM airplane_type", null);
+    public List<AirplaneType> getAllAirplaneTypes() {
+        return jdbcTemplate.query("SELECT * FROM airplane_type", this);
     }
 
     @Override

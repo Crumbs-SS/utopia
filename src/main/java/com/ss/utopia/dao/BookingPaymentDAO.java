@@ -2,6 +2,8 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingPayment;
+import com.ss.utopia.entity.Route;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,61 +11,50 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingPaymentDAO extends BaseDAO<BookingPayment> {
-    public BookingPaymentDAO(Connection conn) {
-        super(conn);
-    }
+public class BookingPaymentDAO extends BaseDAO implements ResultSetExtractor<List<BookingPayment>> {
 
-    public void addBookingPayment(BookingPayment bookingPayment) throws SQLException, ClassNotFoundException{
-        save("INSERT INTO booking_payment(booking_id, stripe_id, refunded) VALUES (?, ?, ?)", new Object[]{
-                bookingPayment.getBooking().getId(),
+    public void addBookingPayment(BookingPayment bookingPayment) {
+        jdbcTemplate.update("INSERT INTO booking_payment(booking_id, stripe_id, refunded) VALUES (?, ?, ?)", bookingPayment.getBooking().getId(),
                 bookingPayment.getStripeId(),
-                bookingPayment.getRefunded()
-        });
+                bookingPayment.getRefunded());
     }
 
-    public void updateBookingPayment(BookingPayment bookingPayment) throws SQLException, ClassNotFoundException{
-        save("UPDATE booking_payment SET stripe_id = ?, refunded = ? WHERE booking_id = ?", new Object[]{
-           bookingPayment.getStripeId(),
-           bookingPayment.getRefunded(),
-           bookingPayment.getBooking().getId()
-        });
+    public void updateBookingPayment(BookingPayment bookingPayment){
+        jdbcTemplate.update("UPDATE booking_payment SET stripe_id = ?, refunded = ? WHERE booking_id = ?", bookingPayment.getStripeId(),
+                bookingPayment.getRefunded(),
+                bookingPayment.getBooking().getId());
     }
 
-    public void deleteBookingPayment(BookingPayment bookingPayment) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM booking_payment WHERE booking_id = ?", new Object[]{
-                3
-        });
+    public void deleteBookingPayment(BookingPayment bookingPayment) {
+        jdbcTemplate.update("DELETE FROM booking_payment WHERE booking_id = ?", new Object[]{bookingPayment.getBooking().getId()}, this);
     }
 
-    public BookingPayment getBookingPaymentByBooking(Booking booking) throws SQLException, ClassNotFoundException{
-        List<BookingPayment> bookingPayments = read("SELECT * FROM booking_payment WHERE booking_id = ?", new Object[]{
-                booking.getId()
-        });
+    public BookingPayment getBookingPaymentByBooking(Booking booking) {
+        List<BookingPayment> bookingPayments = jdbcTemplate.query("SELECT * FROM booking_payment WHERE booking_id = ?", new Object[]{
+                booking.getId()}, this);
 
-        if(!bookingPayments.isEmpty())
+        if(bookingPayments != null && bookingPayments.size() > 0)
             return bookingPayments.get(0);
 
         return null;
     }
 
-    public BookingPayment getBookingByStripeId(String stripeId) throws SQLException, ClassNotFoundException{
-        List<BookingPayment> bookingPayments = read("SELECT * FROM booking_payment WHERE stripe_id = ?", new Object[]{
-                stripeId
-        });
+    public BookingPayment getBookingByStripeId(String stripeId) {
+        List<BookingPayment> bookingPayments = jdbcTemplate.query("SELECT * FROM booking_payment WHERE stripe_id = ?", new Object[]{
+                stripeId}, this);
 
-        if(!bookingPayments.isEmpty())
+        if(bookingPayments != null && bookingPayments.size() > 0)
             return bookingPayments.get(0);
 
         return null;
     }
 
-    public List<BookingPayment> getAllBookingPayments() throws SQLException, ClassNotFoundException{
-        return read("SELECT * FROM booking_payment", null);
+    public List<BookingPayment> getAllBookingPayments() {
+        return jdbcTemplate.query("SELECT * FROM booking_payment", this);
     }
 
     @Override
-    public List<BookingPayment> extractData(ResultSet rs) throws SQLException, ClassNotFoundException {
+    public List<BookingPayment> extractData(ResultSet rs) throws SQLException{
         List<BookingPayment> bookingPayments = new ArrayList<>();
 
         while(rs.next())

@@ -6,12 +6,10 @@ import com.ss.utopia.dao.FlightDAO;
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.FlightBooking;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

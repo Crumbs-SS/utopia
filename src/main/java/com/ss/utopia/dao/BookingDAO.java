@@ -1,6 +1,8 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Booking;
+import com.ss.utopia.entity.Route;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,51 +10,41 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingDAO extends BaseDAO<Booking>{
+public class BookingDAO extends BaseDAO implements ResultSetExtractor<List<Booking>> {
 
-    public BookingDAO(Connection conn) {
-        super(conn);
+    public Integer addBooking(Booking booking){
+        return jdbcTemplate.update("INSERT INTO booking(is_active, confirmation_code) VALUES(?, ?)", booking.getIsActive(),
+                booking.getConfirmationCode());
     }
 
-    public Integer addBooking(Booking booking)throws SQLException, ClassNotFoundException{
-        Integer key = saveWithPK("INSERT INTO booking(is_active, confirmation_code) VALUES(?, ?)", new Object[]{
-                booking.getIsActive(),
-                booking.getConfirmationCode()
-        });
-        booking.setId(key);
-        return key;
-    }
-
-    public void updateBooking(Booking booking) throws SQLException, ClassNotFoundException{
-        save("UPDATE booking SET is_active = ?, confirmation_code = ? WHERE booking.id = ?", new Object[]{
-                booking.getIsActive(),
+    public void updateBooking(Booking booking) {
+        jdbcTemplate.update("UPDATE booking SET is_active = ?, confirmation_code = ? WHERE booking.id = ?", booking.getIsActive(),
                 booking.getConfirmationCode(),
-                booking.getId()
-        });
+                booking.getId());
     }
 
-    public void deleteBooking(Booking booking) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM booking WHERE id = ?", new Object[]{booking.getId()});
+    public void deleteBooking(Booking booking) {
+        jdbcTemplate.update("DELETE FROM booking WHERE id = ?", booking.getId());
     }
 
-    public Booking getBookingById(Integer id) throws SQLException, ClassNotFoundException{
-        List<Booking> bookings = read("SELECT * FROM booking WHERE id = ?", new Object[]{id});
-        if(!bookings.isEmpty())
+    public Booking getBookingById(Integer id){
+        List<Booking> bookings = jdbcTemplate.query("SELECT * FROM booking WHERE id = ?", new Object[]{id},this);
+        if(bookings != null && bookings.size() > 0)
             return bookings.get(0);
 
         return null;
     }
 
-    public Booking getBookingByCode(String confirmationCode) throws SQLException, ClassNotFoundException{
-        List<Booking> bookings = read("SELECT * FROM booking WHERE confirmation_code = ?", new Object[]{confirmationCode});
-        if(!bookings.isEmpty())
+    public Booking getBookingByCode(String confirmationCode){
+        List<Booking> bookings = jdbcTemplate.query("SELECT * FROM booking WHERE confirmation_code = ?", new Object[]{confirmationCode},this);
+        if(bookings != null && bookings.size() > 0)
             return bookings.get(0);
 
         return null;
     }
 
-    public List<Booking> getAllBookings() throws SQLException, ClassNotFoundException{
-        return read("SELECT * FROM booking", null);
+    public List<Booking> getAllBookings() {
+        return jdbcTemplate.query("SELECT * FROM booking", this);
     }
 
     @Override

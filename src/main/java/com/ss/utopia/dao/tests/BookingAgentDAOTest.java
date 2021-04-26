@@ -2,7 +2,6 @@ package com.ss.utopia.dao.tests;
 
 import com.ss.utopia.dao.*;
 import com.ss.utopia.entity.*;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

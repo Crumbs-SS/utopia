@@ -1,6 +1,8 @@
 package com.ss.utopia.dao;
 
+import com.ss.utopia.entity.Route;
 import com.ss.utopia.entity.User;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,49 +10,41 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO extends BaseDAO<User> {
-    public UserDAO(Connection conn) {
-        super(conn);
-    }
+public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
 
     public Integer addUser(User user) throws SQLException, ClassNotFoundException {
-        Integer key = saveWithPK("INSERT INTO user(role_id, given_name, family_name," +
+        return jdbcTemplate.update("INSERT INTO user(role_id, given_name, family_name," +
                 "username, email, password, phone) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                 new Object[]{
-                        user.getUserRole().getId(),
-                        user.getGivenName(),
-                        user.getFamilyName(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getPassword(),
-                        user.getPhone()});
-
-        user.setId(key);
-        return key;
-    }
-
-    public void updateUser(User user) throws SQLException, ClassNotFoundException{
-        save("UPDATE user SET role_id = ?, given_name = ?, family_name = ?, username = ?, " +
-                "email = ?, password = ?, phone = ? WHERE user.id = ?", new Object[]{
                 user.getUserRole().getId(),
                 user.getGivenName(),
                 user.getFamilyName(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getPhone());
+
+    }
+
+    public void updateUser(User user) throws SQLException, ClassNotFoundException{
+        jdbcTemplate.update("UPDATE user SET role_id = ?, given_name = ?, family_name = ?, username = ?, " +
+                "email = ?, password = ?, phone = ? WHERE user.id = ?", user.getUserRole().getId(),
+                user.getGivenName(),
+                user.getFamilyName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
                 user.getPhone(),
-                user.getId()
-        });
+                user.getId());
 
     }
 
     public void deleteUser(User user) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM user WHERE id = ?", new Object[]{user.getId()});
+        jdbcTemplate.update("DELETE FROM user WHERE id = ?", new Object[]{user.getId()});
     }
 
     public User getUserById(Integer id) throws SQLException, ClassNotFoundException {
-        List<User> users = read("SELECT * FROM utopia.user\n"+
-                "JOIN user_role ON user_role.id = role_id WHERE user.id = ?", new Object[]{id});
+        List<User> users = jdbcTemplate.query("SELECT * FROM utopia.user\n"+
+                "JOIN user_role ON user_role.id = role_id WHERE user.id = ?", new Object[]{id},this);
 
         if(users.size() > 0)
             return users.get(0);
@@ -59,19 +53,20 @@ public class UserDAO extends BaseDAO<User> {
     }
 
     public User getUserByName(String name) throws SQLException, ClassNotFoundException {
-        List<User> users = read("SELECT * FROM utopia.user\n"+
-                "JOIN user_role ON user_role.id = role_id WHERE given_name = ?", new Object[]{name});
+        List<User> users = jdbcTemplate.query("SELECT * FROM utopia.user\n"+
+                "JOIN user_role ON user_role.id = role_id WHERE given_name = ?", new Object[]{name},this);
 
-        if(users.size() > 0)
+        if(users != null && users.size() > 0)
             return users.get(0);
 
         return null;
     }
 
     public User getUserByCred(String username, String password) throws SQLException, ClassNotFoundException {
-        List<User> users = read("SELECT * FROM utopia.user\n"+
-                "JOIN user_role ON user_role.id = role_id WHERE username = ? AND password = ?", new Object[]{username, password});
-        if(users.size() > 0)
+        List<User> users = jdbcTemplate.query("SELECT * FROM utopia.user\n"+
+                "JOIN user_role ON user_role.id = role_id WHERE username = ? AND password = ?", new Object[]{username, password}, this);
+
+        if(users != null && users.size() > 0)
             return users.get(0);
 
         return null;
@@ -79,22 +74,22 @@ public class UserDAO extends BaseDAO<User> {
 
 
     public List<User> getAllEmployees() throws SQLException, ClassNotFoundException {
-        return read("""
+        return jdbcTemplate.query("""
                 SELECT * FROM utopia.user
                 JOIN user_role ON user_role.id = role_id
-                AND user_role.name = 'Employee'""", null);
+                AND user_role.name = 'Employee'""", this);
     }
 
     public List<User> getAllTravelers() throws SQLException, ClassNotFoundException{
-        return read("""
+        return jdbcTemplate.query("""
                 SELECT * FROM utopia.user
                 JOIN user_role ON user_role.id = role_id
-                AND user_role.name = 'Traveler'""", null);
+                AND user_role.name = 'Traveler'""", this);
     }
 
     public List<User> getAllUsers() throws SQLException, ClassNotFoundException {
-       return read("SELECT * FROM utopia.user\n" +
-                "JOIN user_role ON user_role.id = role_id", null);
+       return jdbcTemplate.query("SELECT * FROM utopia.user\n" +
+                "JOIN user_role ON user_role.id = role_id", this);
     }
 
     @Override

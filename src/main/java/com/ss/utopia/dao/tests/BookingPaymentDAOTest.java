@@ -4,10 +4,8 @@ import com.ss.utopia.dao.BookingDAO;
 import com.ss.utopia.dao.BookingPaymentDAO;
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingPayment;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
-import java.awt.print.Book;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;

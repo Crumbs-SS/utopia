@@ -2,15 +2,10 @@ package com.ss.utopia.dao.tests;
 
 import com.ss.utopia.dao.BookingDAO;
 import com.ss.utopia.dao.BookingGuestDAO;
-import com.ss.utopia.dao.BookingUserDAO;
-import com.ss.utopia.dao.UserDAO;
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingGuest;
-import com.ss.utopia.entity.User;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
-import java.awt.print.Book;
 import java.sql.Connection;
 import java.sql.SQLException;
 

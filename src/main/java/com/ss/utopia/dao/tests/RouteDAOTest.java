@@ -2,7 +2,6 @@ package com.ss.utopia.dao.tests;
 import com.ss.utopia.dao.RouteDAO;
 import com.ss.utopia.entity.Airport;
 import com.ss.utopia.entity.Route;
-import com.ss.utopia.service.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;

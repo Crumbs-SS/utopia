@@ -2,55 +2,51 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingGuest;
+import com.ss.utopia.entity.Route;
+import org.springframework.jdbc.core.ResultSetExtractor;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingGuestDAO extends BaseDAO<BookingGuest> {
-    public BookingGuestDAO(Connection conn) {
-        super(conn);
+public class BookingGuestDAO extends BaseDAO implements ResultSetExtractor<List<BookingGuest>> {
+
+    public void addBookingGuest(BookingGuest bookingGuest){
+        jdbcTemplate.update("INSERT INTO booking_guest(booking_id, contact_email, contact_phone) VALUES (?, ?, ?)",
+                bookingGuest.getBooking().getId(),
+                bookingGuest.getContactEmail(),
+                bookingGuest.getContactPhone());
     }
 
-    public void addBookingGuest(BookingGuest bookingGuest) throws SQLException, ClassNotFoundException {
-        save("INSERT INTO booking_guest(booking_id, contact_email, contact_phone) VALUES (?, ?, ?)",
-                new Object[]{
-                   bookingGuest.getBooking().getId(),
-                   bookingGuest.getContactEmail(),
-                   bookingGuest.getContactPhone()
-                });
+    public void deleteBookingGuest(BookingGuest bookingGuest){
+        jdbcTemplate.update("DELETE FROM booking_guest WHERE booking_id = ?", bookingGuest.getBooking().getId());
     }
 
-    public void deleteBookingGuest(BookingGuest bookingGuest) throws SQLException, ClassNotFoundException{
-        save("DELETE FROM booking_guest WHERE booking_id = ?", new Object[]{
-                bookingGuest.getBooking().getId()
-        });
-    }
+    public BookingGuest getBookingGuestByEmail(String email) {
+        List<BookingGuest> bookingGuests = jdbcTemplate.query("SELECT * FROM booking_guest WHERE contact_email = ?", new Object[]{
+           email}, this);
 
-    public BookingGuest getBookingGuestByEmail(String email) throws SQLException, ClassNotFoundException{
-        List<BookingGuest> bookingGuests = read("SELECT * FROM booking_guest WHERE contact_email = ?", new Object[]{
-           email
-        });
-
-        if(!bookingGuests.isEmpty())
+        if(bookingGuests != null && bookingGuests.size() > 0)
             return bookingGuests.get(0);
+
         return null;
     }
 
-    public BookingGuest getBookingGuestByBooking(Booking booking) throws SQLException, ClassNotFoundException{
-        List<BookingGuest> bookingGuests = read("SELECT * FROM booking_guest WHERE booking_id = ?", new Object[]{
-                booking.getId()
-        });
+    public BookingGuest getBookingGuestByBooking(Booking booking) {
+        List<BookingGuest> bookingGuests = jdbcTemplate.query("SELECT * FROM booking_guest WHERE booking_id = ?", new Object[]{
+                booking.getId()}, this);
 
-        if(!bookingGuests.isEmpty())
+        if(bookingGuests != null && bookingGuests.size() > 0)
             return bookingGuests.get(0);
+
         return null;
     }
 
 
     @Override
-    public List<BookingGuest> extractData(ResultSet rs) throws SQLException, ClassNotFoundException {
+    public List<BookingGuest> extractData(ResultSet rs) throws SQLException {
         List<BookingGuest> bookingGuests = new ArrayList<>();
 
         while(rs.next())

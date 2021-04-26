@@ -5,10 +5,8 @@ import com.ss.utopia.dao.BookingDAO;
 import com.ss.utopia.dao.BookingUserDAO;
 import com.ss.utopia.dao.UserDAO;
 import com.ss.utopia.entity.Booking;
-import com.ss.utopia.entity.BookingAgent;
 import com.ss.utopia.entity.BookingUser;
 import com.ss.utopia.entity.User;
-import com.ss.utopia.service.ConnectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
