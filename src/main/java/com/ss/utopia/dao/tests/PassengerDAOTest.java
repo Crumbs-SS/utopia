@@ -14,37 +14,27 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PassengerDAOTest {
-     ConnectionUtil connUtil = new ConnectionUtil();
-
     @Test
     void addPassenger() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            PassengerDAO pdao = new PassengerDAO(conn);
-            BookingDAO bookingDAO = new BookingDAO(conn);
+            PassengerDAO pdao = new PassengerDAO();
+            BookingDAO bookingDAO = new BookingDAO();
             Booking booking = bookingDAO.getAllBookings().get(0);
             Date date = Date.valueOf(LocalDate.now());
             Passenger passenger = new Passenger(booking, "ELIJAH", "BROOKS", date, "MALE", "LANE");
             pdao.addPassenger(passenger);
 
             assertEquals(passenger.getId(), pdao.getPassengerByBooking(booking).getId());
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally {
-            conn.close();
         }
     }
 
     @Test
     void updatePassenger() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            PassengerDAO pdao = new PassengerDAO(conn);
-            BookingDAO bookingDAO = new BookingDAO(conn);
+            PassengerDAO pdao = new PassengerDAO();
+            BookingDAO bookingDAO = new BookingDAO();
             Booking booking = bookingDAO.getAllBookings().get(0);
 
             Passenger passenger = pdao.getPassengerByBooking(booking);
@@ -53,34 +43,24 @@ class PassengerDAOTest {
             pdao.updatePassenger(passenger);
 
             assertEquals(passenger.getAddress(), pdao.getPassengerByBooking(booking).getAddress());
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally {
-            conn.close();
         }
     }
 
     @Test
     void deletePassenger() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            PassengerDAO pdao = new PassengerDAO(conn);
-            BookingDAO bookingDAO = new BookingDAO(conn);
+            PassengerDAO pdao = new PassengerDAO();
+            BookingDAO bookingDAO = new BookingDAO();
             Booking booking = bookingDAO.getAllBookings().get(0);;
 
             Passenger passenger = pdao.getPassengerByBooking(booking);
 
             pdao.deletePassenger(passenger);
             assertNull(pdao.getPassengerByBooking(booking));
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally {
-            conn.close();
         }
     }
 }

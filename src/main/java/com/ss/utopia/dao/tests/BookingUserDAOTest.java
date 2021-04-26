@@ -16,16 +16,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookingUserDAOTest {
-    ConnectionUtil connUtil = new ConnectionUtil();
 
     @Test
     void addBookingUser() throws SQLException {
-        Connection conn = null;
         try {
-            conn = connUtil.getConnection();
-            BookingUserDAO badao = new BookingUserDAO(conn);
-            BookingDAO bookingDAO = new BookingDAO(conn);
-            UserDAO udao = new UserDAO(conn);
+            BookingUserDAO badao = new BookingUserDAO();
+            BookingDAO bookingDAO = new BookingDAO();
+            UserDAO udao = new UserDAO();
 
             User user = udao.getAllUsers().get(0);
             Booking booking = bookingDAO.getAllBookings().get(0);
@@ -34,21 +31,17 @@ class BookingUserDAOTest {
             badao.addBookingUser(bookingUser);
 
             assertEquals(bookingUser.getBooking().getId(), badao.getBookingUserFromUser(user).getUser().getId());
-            conn.commit();
+
         } catch (Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        } finally{
-            conn.close();
+
         }
     }
 
     @Test
     void deleteBookingUser() throws SQLException {
-        Connection conn = null;
         try {
-            conn = connUtil.getConnection();
-            BookingUserDAO badao = new BookingUserDAO(conn);
+            BookingUserDAO badao = new BookingUserDAO();
 
             List<BookingUser> bookingUserList = badao.getAllBookingUsers();
             BookingUser bookingUser = bookingUserList.get(bookingUserList.size() - 1);
@@ -56,12 +49,8 @@ class BookingUserDAOTest {
             badao.deleteBookingUser(bookingUser);
 
             assertNull(badao.getBookingUserFromBooking(bookingUser.getBooking()));
-            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        } finally{
-            conn.close();
         }
     }
 }

@@ -13,15 +13,11 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDAOTest {
-    ConnectionUtil connUtil = new ConnectionUtil();
-
     @Test
     void addUser() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            UserRoleDAO urdao = new UserRoleDAO(conn);
-            UserDAO udao = new UserDAO(conn);
+            UserRoleDAO urdao = new UserRoleDAO();
+            UserDAO udao = new UserDAO();
 
             User user = new User("Test", "Guy", "testguy", "testguy@gmail.com",
                     "password1", "1010101010");
@@ -29,62 +25,44 @@ class UserDAOTest {
             udao.addUser(user);
 
             assertEquals(user.toString(), udao.getUserById(user.getId()).toString());
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally{
-            conn.close();
         }
     }
 
     @Test
     void updateUser() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            UserDAO udao = new UserDAO(conn);
+            UserDAO udao = new UserDAO();
 
             User user = udao.getUserByName("Test");
             user.setPassword("password5");
             udao.updateUser(user);
 
             assertEquals(user.toString(), udao.getUserById(user.getId()).toString());
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally{
-            conn.close();
         }
     }
 
     @Test
     void deleteUser() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            UserDAO udao = new UserDAO(conn);
+            UserDAO udao = new UserDAO();
 
             User user = udao.getUserByName("Test");
             udao.deleteUser(user);
             assertNull(udao.getUserById(user.getId()));
 
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally{
-            conn.close();
         }
     }
 
     @Test
     void getAllEmployees() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            UserDAO udao = new UserDAO(conn);
+            UserDAO udao = new UserDAO();
             List<User> users = udao.getAllEmployees();
 
             String[] expectedRoles = new String[users.size()];
@@ -98,21 +76,15 @@ class UserDAOTest {
                     .toArray(new String[users.size()]);
 
             assertArrayEquals(expectedRoles, roles);
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally{
-            conn.close();
         }
     }
 
     @Test
     void getAllTravelers() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            UserDAO udao = new UserDAO(conn);
+            UserDAO udao = new UserDAO();
             List<User> users = udao.getAllTravelers();
 
             String[] expectedRoles = new String[users.size()];
@@ -125,12 +97,8 @@ class UserDAOTest {
                     .toArray(new String[users.size()]);
 
             assertArrayEquals(expectedRoles, roles);
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally{
-            conn.close();
         }
     }
 

@@ -15,16 +15,12 @@ import java.sql.Timestamp;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FlightDAOTest {
-    ConnectionUtil connUtil = new ConnectionUtil();
-
     @Test
     void addFlight() throws SQLException {
-        Connection conn = null;
         try {
-            conn = connUtil.getConnection();
-            RouteDAO routeDAO = new RouteDAO(conn);
-            AirplaneDAO airplaneDAO = new AirplaneDAO(conn);
-            FlightDAO flightDAO = new FlightDAO(conn);
+            RouteDAO routeDAO = new RouteDAO();
+            AirplaneDAO airplaneDAO = new AirplaneDAO();
+            FlightDAO flightDAO = new FlightDAO();
 
             Route route = routeDAO.getAllRoutes().get(routeDAO.getAllRoutes().size() - 1);
             Airplane airplane = airplaneDAO.getAllAirplanes().get(airplaneDAO.getAllAirplanes().size() - 1);
@@ -37,51 +33,35 @@ class FlightDAOTest {
 
             assertEquals(flight.getId(), flightDAO.getFlightFromId(flight.getId()).getId());
 
-            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        } finally{
-            conn.close();
         }
     }
 
     @Test
     void updateFlight() throws SQLException {
-        Connection conn = null;
         try {
-            conn = connUtil.getConnection();
-            FlightDAO flightDAO = new FlightDAO(conn);
+            FlightDAO flightDAO = new FlightDAO();
             Flight flight = flightDAO.getAllFlights().get(flightDAO.getAllFlights().size() - 1);
             flight.setSeatPrice(1000F);
 
             flightDAO.updateFlight(flight);
             assertEquals(flight.toString(), flightDAO.getFlightFromId(flight.getId()).toString());
-            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        } finally{
-            conn.close();
         }
     }
 
     @Test
     void deleteFlight() throws SQLException {
-        Connection conn = null;
         try {
-            conn = connUtil.getConnection();
-            FlightDAO flightDAO = new FlightDAO(conn);
+            FlightDAO flightDAO = new FlightDAO();
             Flight flight = flightDAO.getAllFlights().get(flightDAO.getAllFlights().size() - 1);
 
             flightDAO.deleteFlight(flight);
             assertNull(flightDAO.getFlightFromId(flight.getId()));
-            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        } finally{
-            conn.close();
         }
     }
 }

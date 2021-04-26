@@ -12,15 +12,12 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookingGuestDAOTest {
-    ConnectionUtil connUtil = new ConnectionUtil();
-
     @Test
     void addBookingGuest() throws SQLException {
         Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            BookingGuestDAO bgdao = new BookingGuestDAO(conn);
-            BookingDAO bookingDAO = new BookingDAO(conn);
+            BookingGuestDAO bgdao = new BookingGuestDAO();
+            BookingDAO bookingDAO = new BookingDAO();
 
             Booking booking = bookingDAO.getAllBookings().get(0);
 
@@ -28,33 +25,22 @@ class BookingGuestDAOTest {
             bgdao.addBookingGuest(bookingGuest);
 
             assertEquals(bookingGuest.getBooking().getId(), bgdao.getBookingGuestByEmail("CONTACT@GMAIL").getBooking().getId());
-            conn.commit();
-        }catch(Exception e){
+        }catch(Exception e) {
             e.printStackTrace();
-            conn.rollback();
-        }finally {
-            conn.close();
         }
     }
 
     @Test
     void deleteBookingGuest() throws SQLException {
-        Connection conn = null;
         try{
-            conn = connUtil.getConnection();
-            BookingGuestDAO bgdao = new BookingGuestDAO(conn);
-
+            BookingGuestDAO bgdao = new BookingGuestDAO();
 
             BookingGuest bookingGuest = bgdao.getBookingGuestByEmail("CONTACT@GMAIL");
             bgdao.deleteBookingGuest(bookingGuest);
 
             assertNull(bgdao.getBookingGuestByEmail("CONTACT@GMAIL"));
-            conn.commit();
         }catch(Exception e){
             e.printStackTrace();
-            conn.rollback();
-        }finally {
-            conn.close();
         }
     }
 }
