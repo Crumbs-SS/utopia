@@ -1,4 +1,4 @@
 package com.ss.utopia.service;
 
-public class AdminService {
+public class EmployeeService {
 }
