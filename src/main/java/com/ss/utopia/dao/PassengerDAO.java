@@ -3,12 +3,15 @@ package com.ss.utopia.dao;
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.Passenger;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+@Repository
 public class PassengerDAO extends BaseDAO implements ResultSetExtractor<List<Passenger>> {
 
     public Integer addPassenger(Passenger passenger) throws SQLException, ClassNotFoundException {
@@ -47,6 +50,9 @@ public class PassengerDAO extends BaseDAO implements ResultSetExtractor<List<Pas
         return null;
     }
 
+    public List<Passenger> getAllPassengers() {
+        return jdbcTemplate.query("SELECT * FROM passenger", this);
+    }
 
     @Override
     public List<Passenger> extractData(ResultSet rs) throws SQLException {

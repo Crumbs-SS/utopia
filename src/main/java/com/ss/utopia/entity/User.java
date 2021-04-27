@@ -114,7 +114,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userRole=" + userRole.getName() +
+                ", userRole=" + userRole +
                 ", givenName='" + givenName + '\'' +
                 ", familyName='" + familyName + '\'' +
                 ", username='" + username + '\'' +

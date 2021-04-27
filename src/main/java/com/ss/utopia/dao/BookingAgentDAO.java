@@ -4,12 +4,15 @@ import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingAgent;
 import com.ss.utopia.entity.User;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class BookingAgentDAO extends BaseDAO implements ResultSetExtractor<List<BookingAgent>> {
 
     public void addBookingAgent(BookingAgent bookingAgent) {
@@ -18,7 +21,10 @@ public class BookingAgentDAO extends BaseDAO implements ResultSetExtractor<List<
     }
 
     public void deleteBookingAgent(BookingAgent bookingAgent) {
-        jdbcTemplate.update("DELETE FROM booking_agent WHERE booking_id = ?", bookingAgent.getBooking().getId());
+        jdbcTemplate.update("DELETE FROM booking_agent WHERE booking_id = ? AND agent_id = ?",
+                bookingAgent.getBooking().getId(),
+                bookingAgent.getAgent().getId()
+        );
     }
 
     public BookingAgent getBookingAgentFromAgent(User user){
@@ -32,7 +38,7 @@ public class BookingAgentDAO extends BaseDAO implements ResultSetExtractor<List<
 
     public BookingAgent getBookingAgentFromBooking(Booking booking) {
         List<BookingAgent> bookingAgents = jdbcTemplate.query("SELECT * FROM booking_agent WHERE booking_id = ?", new Object[]{
-                booking.getId()},this);
+                booking.getId()}, this::extractData);
 
         if(bookingAgents != null && bookingAgents.size() > 0)
             return bookingAgents.get(0);

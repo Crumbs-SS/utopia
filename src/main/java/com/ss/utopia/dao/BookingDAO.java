@@ -2,12 +2,14 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Booking;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class BookingDAO extends BaseDAO implements ResultSetExtractor<List<Booking>> {
 
     public Integer addBooking(Booking booking){

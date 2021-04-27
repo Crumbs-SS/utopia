@@ -2,12 +2,14 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.User;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
 
     public Integer addUser(User user) throws SQLException, ClassNotFoundException {
@@ -41,7 +43,7 @@ public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
     }
 
     public User getUserById(Integer id) throws SQLException, ClassNotFoundException {
-        List<User> users = jdbcTemplate.query("SELECT * FROM utopia.user\n"+
+        List<User> users = jdbcTemplate.query("SELECT * FROM utopia.user "+
                 "JOIN user_role ON user_role.id = role_id WHERE user.id = ?", new Object[]{id},this);
 
         if(users.size() > 0)

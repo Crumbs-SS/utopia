@@ -3,12 +3,15 @@ package com.ss.utopia.dao;
 import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.BookingPayment;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Repository
 public class BookingPaymentDAO extends BaseDAO implements ResultSetExtractor<List<BookingPayment>> {
 
     public void addBookingPayment(BookingPayment bookingPayment) {
@@ -24,7 +27,7 @@ public class BookingPaymentDAO extends BaseDAO implements ResultSetExtractor<Lis
     }
 
     public void deleteBookingPayment(BookingPayment bookingPayment) {
-        jdbcTemplate.update("DELETE FROM booking_payment WHERE booking_id = ?", new Object[]{bookingPayment.getBooking().getId()}, this);
+        jdbcTemplate.update("DELETE FROM booking_payment WHERE booking_id = ?", bookingPayment.getBooking().getId());
     }
 
     public BookingPayment getBookingPaymentByBooking(Booking booking) {

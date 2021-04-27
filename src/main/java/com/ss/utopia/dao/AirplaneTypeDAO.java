@@ -2,12 +2,14 @@ package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.AirplaneType;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class AirplaneTypeDAO extends BaseDAO implements ResultSetExtractor<List<AirplaneType>> {
 
     public Integer addAirplaneType(AirplaneType airplaneType) {
