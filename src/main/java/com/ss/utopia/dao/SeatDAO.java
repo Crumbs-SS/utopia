@@ -27,8 +27,8 @@ public class SeatDAO extends BaseDAO implements ResultSetExtractor<List<Seat>>{
        jdbcTemplate.update("UPDATE seat SET first = ?, business = ?, economy = ? WHERE flight_id = ?", seat.getFirst(),
                 seat.getBusiness(), seat.getEconomy(), seat.getFlight().getId());
     }
-    public void deleteSeat(Seat seat){
-        jdbcTemplate.update("DELETE FROM seat WHERE id = ?", seat.getFlight().getId());
+    public void deleteSeat(Integer id){
+        jdbcTemplate.update("DELETE FROM seat WHERE flight_id = ?", id);
     }
     public Seat getSeatFromId(Integer id) {
         List<Seat> seats = jdbcTemplate.query("SELECT * FROM seat WHERE flight_id = ?", new Object[]{id},this);

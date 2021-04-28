@@ -14,6 +14,9 @@ public class Seat {
        this.business = business;
        this.economy = economy;
    }
+   public Seat(Integer id){
+       this.flight = new Flight(id);
+   }
 
     public Flight getFlight() {
         return flight;

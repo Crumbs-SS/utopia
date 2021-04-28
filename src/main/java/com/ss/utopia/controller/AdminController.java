@@ -1,9 +1,6 @@
 package com.ss.utopia.controller;
 
-import com.ss.utopia.entity.Airport;
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.User;
-import com.ss.utopia.entity.UserRole;
+import com.ss.utopia.entity.*;
 import com.ss.utopia.service.AdminService;
 import com.ss.utopia.service.TravelerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,4 +109,18 @@ public class AdminController extends BaseController {
     public String deleteEmployee(@PathVariable int id) {
         return as.deleteEmployee(id);
     }
+
+    //Seats
+    @GetMapping("/seats")
+    public List<Seat> getSeats(){return as.getSeats();}
+
+    @PostMapping("/addSeats")
+    public void addSeats(@RequestBody Seat seats){ as.addSeats(seats); }
+
+    @PutMapping("/updateSeats/{id}")
+    public void updateSeats(@RequestBody Seat seat) { as.updateSeats(seat);}
+
+    @DeleteMapping("/deleteSeats/{id}")
+    public void deleteSeats(@PathVariable int id){ as.deleteSeats(id); }
+
 }

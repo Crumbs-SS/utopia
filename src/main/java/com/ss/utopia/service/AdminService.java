@@ -4,6 +4,7 @@ package com.ss.utopia.service;
 import com.ss.utopia.dao.*;
 import com.ss.utopia.entity.Airport;
 import com.ss.utopia.entity.Flight;
+import com.ss.utopia.entity.Seat;
 import com.ss.utopia.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class AdminService {
     AirportDAO airportDAO;
     @Autowired
     UserDAO udao;
+    @Autowired
+    SeatDAO seatDAO;
 
     public List<Flight> getFlights() {
         List<Flight> flights = null;
@@ -245,5 +248,60 @@ public class AdminService {
             e.printStackTrace();
         }
         return "Could not delete Employee with id=" + id;
+    }
+
+    public List<Seat> getSeats() {
+        List<Seat> seats = null;
+        try {
+            seats = seatDAO.getAllSeats();
+
+            for (Seat seat : seats) {
+                Flight temp = fdao.getFlightFromId(seat.getFlight().getId());
+                temp.setRoute(rdao.getRouteById(seat.getFlight().getId()));
+                temp.setAirplane(airplaneDAO.getAirplaneById(seat.getFlight().getId()));
+                seat.setFlight(temp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return seats;
+    }
+
+    public void addSeats(Seat seat) {
+        try {
+            seatDAO.addSeat(seat);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSeats(Seat seat) {
+        try{
+            Seat temp = seatDAO.getSeatFromId(seat.getFlight().getId());
+            if(temp == null) throw new Exception("id was not provided");
+
+            if(seat.getFirst() == null)
+                seat.setFirst(temp.getFirst());
+
+            if(seat.getBusiness() == null)
+                seat.setBusiness(temp.getBusiness());
+
+            if(seat.getEconomy() == null)
+                seat.setEconomy(temp.getEconomy());
+
+            seatDAO.updateSeat(seat);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSeats(int id) {
+        try {
+            seatDAO.deleteSeat(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
