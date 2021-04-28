@@ -1,10 +1,20 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import net.minidev.json.annotate.JsonIgnore;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity(name = "airplane")
 public class Airplane {
+
+    @Id
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name="type_id")
     private AirplaneType airplaneType;
 
     public Airplane() {}
@@ -29,26 +39,6 @@ public class Airplane {
 
     public void setAirplaneType(AirplaneType airplaneType) {
         this.airplaneType = airplaneType;
-    }
-
-    public static Airplane toObject(ResultSet rs) throws SQLException {
-        Integer airplaneID = rs.getInt("id");
-        Integer maxCapacity = rs.getInt("max_capacity");
-        Integer airplaneTypeID = rs.getInt("type_id");
-
-        AirplaneType airplaneType = new AirplaneType(maxCapacity);
-        airplaneType.setId(airplaneTypeID);
-
-        Airplane airplane = new Airplane(airplaneType);
-        airplane.setId(airplaneID);
-
-        return airplane;
-    }
-
-    @Override
-    public String toString() {
-        return airplaneType != null ?  "AirplaneID: " + id + "AirplaneType: "
-                + airplaneType.toString() : "AirplaneID: " + id;
     }
 }
 

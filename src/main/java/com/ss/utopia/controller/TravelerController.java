@@ -1,9 +1,7 @@
 package com.ss.utopia.controller;
 
-import com.ss.utopia.dto.BookingDTO;
-import com.ss.utopia.entity.Booking;
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.User;
+import com.ss.utopia.entity.Airplane;
+import com.ss.utopia.entity.AirplaneType;
 import com.ss.utopia.service.TravelerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,33 +10,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/traveler")
-public class TravelerController extends BaseController {
+public class TravelerController {
 
     @Autowired
     TravelerService travelerService;
 
-    @GetMapping("/flights")
-    public List<Flight> getFlights() {
-        return travelerService.getFlights();
+    @GetMapping("/planetypes")
+    public List<AirplaneType> getAirplaneTypes(){
+        return travelerService.getAllAirplaneTypes();
     }
 
-    @GetMapping("/users/{id}")
-    public User getUser(@PathVariable String id){
-        return travelerService.getUser(id);
+    @GetMapping("/planes/{maxCapacity}")
+    public List<Airplane> getAirplaneTypes(@PathVariable String maxCapacity ){
+        return travelerService.getAirplanesByCapacity(maxCapacity);
     }
 
-    @PostMapping("/login")
-    public String loginUser(@RequestBody User user){
-        return travelerService.login(user) != null ? "Success" : "Fail";
+    @GetMapping("/airplanes")
+    public List<Airplane> getAirplanes(){
+        return travelerService.getAirplanes();
     }
 
-    @PostMapping("/bookings")
-    public Booking addBooking(@RequestBody BookingDTO bookingDTO){
-        return travelerService.addBooking(bookingDTO);
-    }
-
-    @PutMapping("/bookings/{id}")
-    public void cancelBooking(@PathVariable String id){
-        travelerService.cancelBooking(id);
-    }
 }
