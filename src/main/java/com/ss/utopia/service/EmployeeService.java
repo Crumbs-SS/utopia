@@ -4,6 +4,7 @@ import com.ss.utopia.dao.AirplaneDAO;
 import com.ss.utopia.dao.FlightDAO;
 import com.ss.utopia.dao.RouteDAO;
 import com.ss.utopia.entity.Flight;
+import com.ss.utopia.entity.Seat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,25 +42,30 @@ public class EmployeeService {
     public void updateFlight(Flight flight)  {
 
         try {
+            Flight temp = flightDAO.getFlightFromId(flight.getId());
+
             if(flight.getRoute() == null)
-                flight.setRoute(flightDAO.getFlightFromId(flight.getId()).getRoute());
+                flight.setRoute(temp.getRoute());
 
             if(flight.getAirplane() == null)
-                flight.setAirplane(flightDAO.getFlightFromId(flight.getId()).getAirplane());
+                flight.setAirplane(temp.getAirplane());
 
             if(flight.getDepartTime() == null)
-                flight.setDepartTime(flightDAO.getFlightFromId(flight.getId()).getDepartTime());
+                flight.setDepartTime(temp.getDepartTime());
 
             if(flight.getReservedSeats() == null)
-                flight.setReservedSeats(flightDAO.getFlightFromId(flight.getId()).getReservedSeats());
+                flight.setReservedSeats(temp.getReservedSeats());
 
             if(flight.getSeatPrice() == null)
-                flight.setSeatPrice(flightDAO.getFlightFromId(flight.getId()).getSeatPrice());
+                flight.setSeatPrice(temp.getSeatPrice());
 
             flightDAO.updateFlight(flight);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void addSeats(Seat seat) {
     }
 }

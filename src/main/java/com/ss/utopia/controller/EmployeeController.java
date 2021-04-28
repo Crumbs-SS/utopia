@@ -1,6 +1,7 @@
 package com.ss.utopia.controller;
 
 import com.ss.utopia.entity.Flight;
+import com.ss.utopia.entity.Seat;
 import com.ss.utopia.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,9 @@ public class EmployeeController extends BaseController{
 
     @PutMapping("/updateFlight/{id}")
     public void updateFlight(@RequestBody Flight flight) { employeeService.updateFlight(flight); }
+
+    @PutMapping("/addSeats/{id}")
+    public void addSeats(@RequestBody Seat seat) { employeeService.addSeats(seat);}
 
 
 
