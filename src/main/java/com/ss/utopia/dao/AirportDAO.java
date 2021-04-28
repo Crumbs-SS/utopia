@@ -13,18 +13,18 @@ import java.util.List;
 @Repository
 public class AirportDAO extends BaseDAO implements ResultSetExtractor<List<Airport>> {
 
-    public void addAirport(Airport airport) throws DataAccessException {
-        jdbcTemplate.update("INSERT INTO airport(iata_id, city) VALUES(?, ?)",
+    public int addAirport(Airport airport) throws DataAccessException {
+        return jdbcTemplate.update("INSERT INTO airport(iata_id, city) VALUES(?, ?)",
                 airport.getAirportCode(),
                 airport.getCityName());
     }
-    public void updateAirport(Airport airport) {
-       jdbcTemplate.update("UPDATE airport SET city = ? WHERE iata_id = ?",
+    public int updateAirport(Airport airport) {
+       return jdbcTemplate.update("UPDATE airport SET city = ? WHERE iata_id = ?",
                airport.getCityName(), airport.getAirportCode());
     }
 
-    public void deleteAirport(Airport airport) throws DataAccessException {
-        jdbcTemplate.update("DELETE FROM airport WHERE iata_id = ?", airport.getAirportCode());
+    public int deleteAirport(Airport airport) throws DataAccessException {
+        return jdbcTemplate.update("DELETE FROM airport WHERE iata_id = ?", airport.getAirportCode());
     }
 
     public Airport getAirportByAirportCode(String airportCode) {
