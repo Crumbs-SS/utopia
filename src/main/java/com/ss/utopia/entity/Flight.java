@@ -1,5 +1,7 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -9,6 +11,8 @@ public class Flight {
     private Route route;
     private Airplane airplane;
 
+   // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS",timezone="PST")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp departTime;
     private Integer reservedSeats;
     private Float seatPrice;

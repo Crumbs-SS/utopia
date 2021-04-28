@@ -1,6 +1,7 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Airport;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Repository
 public class AirportDAO extends BaseDAO implements ResultSetExtractor<List<Airport>> {
 
-    public void addAirport(Airport airport) {
+    public void addAirport(Airport airport) throws DataAccessException {
         jdbcTemplate.update("INSERT INTO airport(iata_id, city) VALUES(?, ?)",
                 airport.getAirportCode(),
                 airport.getCityName());
@@ -22,7 +23,7 @@ public class AirportDAO extends BaseDAO implements ResultSetExtractor<List<Airpo
                airport.getCityName(), airport.getAirportCode());
     }
 
-    public void deleteAirport(Airport airport) {
+    public void deleteAirport(Airport airport) throws DataAccessException {
         jdbcTemplate.update("DELETE FROM airport WHERE iata_id = ?", airport.getAirportCode());
     }
 

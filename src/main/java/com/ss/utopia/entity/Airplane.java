@@ -7,10 +7,10 @@ public class Airplane {
     private Integer id;
     private AirplaneType airplaneType;
 
+    public Airplane() {}
     public Airplane(AirplaneType airplaneType) {
         this.airplaneType = airplaneType;
     }
-
     public Airplane(Integer airplaneID) {
         this.id = airplaneID;
     }

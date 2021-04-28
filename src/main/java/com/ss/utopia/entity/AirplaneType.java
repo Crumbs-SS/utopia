@@ -7,6 +7,7 @@ public class AirplaneType {
     private Integer id;
     private Integer maxCapacity;
 
+    public AirplaneType() {}
     public AirplaneType(Integer maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
