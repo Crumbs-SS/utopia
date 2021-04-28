@@ -1,7 +1,5 @@
 package com.ss.utopia.entity;
 
-import net.minidev.json.annotate.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;

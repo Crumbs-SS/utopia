@@ -15,7 +15,6 @@ public class AirplaneType {
 
     @Id
     private Integer id;
-
     private Integer maxCapacity;
 
     @JsonIgnore

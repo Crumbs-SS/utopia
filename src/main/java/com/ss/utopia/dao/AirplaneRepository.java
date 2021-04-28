@@ -1,7 +1,6 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Airplane;
-import com.ss.utopia.entity.AirplaneType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
