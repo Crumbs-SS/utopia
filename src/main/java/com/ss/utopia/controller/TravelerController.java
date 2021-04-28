@@ -1,5 +1,7 @@
 package com.ss.utopia.controller;
 
+import com.ss.utopia.dto.BookingDTO;
+import com.ss.utopia.entity.Booking;
 import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.User;
 import com.ss.utopia.service.TravelerService;
@@ -28,5 +30,15 @@ public class TravelerController extends BaseController {
     @PostMapping("/login")
     public String loginUser(@RequestBody User user){
         return travelerService.login(user) != null ? "Success" : "Fail";
+    }
+
+    @PostMapping("/bookings")
+    public Booking addBooking(@RequestBody BookingDTO bookingDTO){
+        return travelerService.addBooking(bookingDTO);
+    }
+
+    @PutMapping("/bookings/{id}")
+    public void cancelBooking(@PathVariable String id){
+        travelerService.cancelBooking(id);
     }
 }

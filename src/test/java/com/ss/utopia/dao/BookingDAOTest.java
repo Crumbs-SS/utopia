@@ -25,7 +25,7 @@ class BookingDAOTest {
     @Test
     @Order(1)
     void addBooking() throws SQLException, ClassNotFoundException{
-        Booking booking = new Booking(0, "CONFIRMATION#-1");
+        Booking booking = new Booking(false, "CONFIRMATION#-1");
 
         int numberOfBookings = bookingDAO.getAllBookings().size();
         bookingDAO.addBooking(booking);
@@ -36,7 +36,7 @@ class BookingDAOTest {
     @Order(2)
     void updateBooking() throws SQLException, ClassNotFoundException{
         Booking booking = bookingDAO.getBookingByCode("CONFIRMATION#-1");
-        booking.setIsActive(1);
+        booking.setIsActive(true);
 
         bookingDAO.updateBooking(booking);
         assertEquals(booking.toString(), bookingDAO.getBookingByCode("CONFIRMATION#-1").toString());

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +29,7 @@ class BookingPaymentDAOTest {
     @Order(1)
     void addBookingPayment() throws SQLException, ClassNotFoundException {
         Booking booking = bdao.getAllBookings().get(bdao.getAllBookings().size() - 1);
-        BookingPayment bookingPayment = new BookingPayment("STRIPE-1", false);
+        BookingPayment bookingPayment = new BookingPayment("STRIPE-1", false, booking);
         bookingPayment.setBooking(booking);
 
         bpdao.addBookingPayment(bookingPayment);

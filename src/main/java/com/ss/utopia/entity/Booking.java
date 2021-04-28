@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class Booking {
     private Integer id;
-    private Integer isActive;
+    private Boolean isActive;
     private String confirmationCode;
 
-    public Booking(Integer isActive, String confirmationCode) {
+    public Booking(Boolean isActive, String confirmationCode) {
         this.isActive = isActive;
         this.confirmationCode = confirmationCode;
     }
@@ -27,11 +27,11 @@ public class Booking {
         this.id = id;
     }
 
-    public Integer getIsActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(Integer isActive) {
+    public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -54,7 +54,7 @@ public class Booking {
 
     public static Booking toObject(ResultSet rs) throws SQLException {
         Integer bookingId = rs.getInt("id");
-        Integer isActive = rs.getInt("is_active");
+        Boolean isActive = rs.getBoolean("is_active");
         String confirmationCode = rs.getString("confirmation_code");
 
         Booking booking = new Booking(isActive, confirmationCode);

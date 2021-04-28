@@ -41,9 +41,14 @@ public class PassengerDAO extends BaseDAO implements ResultSetExtractor<List<Pas
         jdbcTemplate.update("DELETE FROM passenger WHERE id = ?", passenger.getId());
     }
 
-    public Passenger getPassengerByBooking(Booking booking) throws  SQLException, ClassNotFoundException{
-        List<Passenger> passengers = jdbcTemplate.query("SELECT * FROM passenger WHERE booking_id = ?", new Object[]{
+    public List<Passenger> getPassengersByBooking(Booking booking) throws  SQLException, ClassNotFoundException{
+        return jdbcTemplate.query("SELECT * FROM passenger WHERE booking_id = ?", new Object[]{
                 booking.getId()}, this);
+    }
+
+    public Passenger getPassenger(Integer id) throws  SQLException, ClassNotFoundException{
+        List<Passenger> passengers = jdbcTemplate.query("SELECT * FROM passenger WHERE id = ?", new Object[]{id},
+                this);
 
         if(passengers != null && passengers.size() >0)
             return passengers.get(0);

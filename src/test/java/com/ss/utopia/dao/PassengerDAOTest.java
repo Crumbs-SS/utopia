@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -44,12 +45,12 @@ class PassengerDAOTest {
     void updatePassenger() throws SQLException, ClassNotFoundException {
         Booking booking = bookingDAO.getAllBookings().get(0);
 
-        Passenger passenger = pdao.getPassengerByBooking(booking);
+        List<Passenger> passengers = pdao.getPassengersByBooking(booking);
+        Passenger passenger = passengers.get(0);
         passenger.setAddress("13134 LANE");
 
         pdao.updatePassenger(passenger);
-
-        assertEquals(passenger.getAddress(), pdao.getPassengerByBooking(booking).getAddress());
+        assertEquals(passenger.getAddress(), pdao.getPassenger(passenger.getId()).getAddress());
     }
 
     @Test
@@ -57,9 +58,10 @@ class PassengerDAOTest {
     void deletePassenger() throws SQLException, ClassNotFoundException {
         Booking booking = bookingDAO.getAllBookings().get(0);;
 
-        Passenger passenger = pdao.getPassengerByBooking(booking);
+        List<Passenger> passengers = pdao.getPassengersByBooking(booking);
+        Passenger passenger = passengers.get(0);
 
         pdao.deletePassenger(passenger);
-        assertNull(pdao.getPassengerByBooking(booking));
+        assertNull(pdao.getPassenger(passenger.getId()));
     }
 }

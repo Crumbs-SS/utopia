@@ -9,9 +9,10 @@ public class BookingPayment {
     private String stripeId;
     private Boolean refunded;
 
-    public BookingPayment(String stripeId, Boolean refunded) {
+    public BookingPayment(String stripeId, Boolean refunded, Booking booking) {
         this.stripeId = stripeId;
         this.refunded = refunded;
+        this.booking = booking;
     }
 
     public Booking getBooking() {
@@ -53,7 +54,7 @@ public class BookingPayment {
         Boolean refunded = rs.getBoolean("refunded");
 
         Booking booking = new Booking(bookingId);
-        BookingPayment bookingPayment = new BookingPayment(stripeId, refunded);
+        BookingPayment bookingPayment = new BookingPayment(stripeId, refunded, booking);
         bookingPayment.setBooking(booking);
 
         return bookingPayment;
