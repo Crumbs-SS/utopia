@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 public class Flight {
     private Integer id;
@@ -13,12 +12,12 @@ public class Flight {
 
    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS",timezone="PST")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS")
-    private Timestamp departTime;
+    private String departTime;
     private Integer reservedSeats;
     private Float seatPrice;
 
 
-    public Flight(Timestamp departTime, Integer reservedSeats, Float seatPrice) {
+    public Flight(String departTime, Integer reservedSeats, Float seatPrice) {
         this.departTime = departTime;
         this.reservedSeats = reservedSeats;
         this.seatPrice = seatPrice;
@@ -52,11 +51,11 @@ public class Flight {
         this.airplane = airplane;
     }
 
-    public Timestamp getDepartTime() {
+    public String getDepartTime() {
         return departTime;
     }
 
-    public void setDepartTime(Timestamp departTime) {
+    public void setDepartTime(String departTime) {
         this.departTime = departTime;
     }
 
@@ -92,7 +91,7 @@ public class Flight {
         Integer flightId = rs.getInt("id");
         Integer routeId = rs.getInt("route_id");
         Integer airplaneID = rs.getInt("airplane_id");
-        Timestamp departureTime = rs.getTimestamp("departure_time");
+        String departureTime = rs.getString("departure_time");
 
         Integer reservedSeats = rs.getInt("reserved_seats");
         Float seatPrice = rs.getFloat("seat_price");

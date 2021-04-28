@@ -36,7 +36,7 @@ class FlightDAOTest {
         Route route = routeDAO.getAllRoutes().get(routeDAO.getAllRoutes().size() - 1);
         Airplane airplane = airplaneDAO.getAllAirplanes().get(airplaneDAO.getAllAirplanes().size() - 1);
 
-        Flight flight = new Flight(new Timestamp(99999999), 23, 200.22F);
+        Flight flight = new Flight(new String(String.valueOf(99999999)), 23, 200.22F);
         flight.setRoute(route);
         flight.setAirplane(airplane);
 

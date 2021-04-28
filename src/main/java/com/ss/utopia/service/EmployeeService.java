@@ -4,12 +4,11 @@ import com.ss.utopia.dao.AirplaneDAO;
 import com.ss.utopia.dao.FlightDAO;
 import com.ss.utopia.dao.RouteDAO;
 import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
+import java.sql.SQLException;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
@@ -38,101 +37,28 @@ public class EmployeeService {
         return flight;
 
     }
-    public void updateFlightRoute(String id, Integer newRouteID) {
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
-        try {
-            flight = flightDAO.getFlightFromId(flightID);
-            flight.setRoute(routeDAO.getRouteById(newRouteID));
-            flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
-            flightDAO.updateFlight(flight);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void updateFlightAirplane(String id, Integer newAirplaneID){
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
-        try {
-            flight = flightDAO.getFlightFromId(flightID);
-            flight.setRoute(routeDAO.getRouteById(flight.getRoute().getId()));
-            flight.setAirplane(airplaneDAO.getAirplaneById(newAirplaneID));
-            flightDAO.updateFlight(flight);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void updateFlightDepartTime(String id, Timestamp newDepartTime){
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
-        try {
-            flight = flightDAO.getFlightFromId(flightID);
-            flight.setRoute(routeDAO.getRouteById(flight.getRoute().getId()));
-            flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
-            flight.setDepartTime(newDepartTime);
-            flightDAO.updateFlight(flight);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void updateFlightSeats(String id, Integer newReservedSeats){
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
-        try {
-            flight = flightDAO.getFlightFromId(flightID);
-            flight.setRoute(routeDAO.getRouteById(flight.getRoute().getId()));
-            flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
-            flight.setReservedSeats(newReservedSeats);
-            flightDAO.updateFlight(flight);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void updateFlightSeatPrice(String id, Float newSeatPrice){
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
-        try {
-            flight = flightDAO.getFlightFromId(flightID);
-            flight.setRoute(routeDAO.getRouteById(flight.getRoute().getId()));
-            flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
-            flight.setSeatPrice(newSeatPrice);
-            flightDAO.updateFlight(flight);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
-    public void updateFlight(String id, Integer routeID, Integer airplaneID, Timestamp departTime, Integer reservedSeats, Float seatPrice)
-    {
-        Integer flightID = Integer.parseInt(id);
-        Flight flight = null;
+    public void updateFlight(Flight flight)  {
+
         try {
-            flight = flightDAO.getFlightFromId(flightID);
+            if(flight.getRoute() == null)
+                flight.setRoute(flightDAO.getFlightFromId(flight.getId()).getRoute());
 
-            if (routeID != null)
-                flight.setRoute(routeDAO.getRouteById(routeID));
-            else
-                flight.setRoute(routeDAO.getRouteById(flight.getRoute().getId()));
+            if(flight.getAirplane() == null)
+                flight.setAirplane(flightDAO.getFlightFromId(flight.getId()).getAirplane());
 
-            if(airplaneID != null)
-                flight.setAirplane(airplaneDAO.getAirplaneById(airplaneID));
-            else
-                flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
+            if(flight.getDepartTime() == null)
+                flight.setDepartTime(flightDAO.getFlightFromId(flight.getId()).getDepartTime());
 
-            if(departTime != null)
-                flight.setDepartTime(departTime);
-            if(reservedSeats != null)
-                flight.setReservedSeats(reservedSeats);
-            if(seatPrice != null)
-                flight.setSeatPrice(seatPrice);
+            if(flight.getReservedSeats() == null)
+                flight.setReservedSeats(flightDAO.getFlightFromId(flight.getId()).getReservedSeats());
 
-        }
-        catch (Exception e){
+            if(flight.getSeatPrice() == null)
+                flight.setSeatPrice(flightDAO.getFlightFromId(flight.getId()).getSeatPrice());
+
+            flightDAO.updateFlight(flight);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
