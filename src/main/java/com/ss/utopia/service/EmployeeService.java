@@ -38,7 +38,7 @@ public class EmployeeService {
         return flight;
 
     }
-    public Flight updateFlightRoute(String id, Integer newRouteID) {
+    public void updateFlightRoute(String id, Integer newRouteID) {
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
         try {
@@ -50,9 +50,8 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
     }
-    public Flight updateFlightAirplane(String id, Integer newAirplaneID){
+    public void updateFlightAirplane(String id, Integer newAirplaneID){
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
         try {
@@ -64,10 +63,8 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
-
     }
-    public Flight updateFlightDepartTime(String id, Timestamp newDepartTime){
+    public void updateFlightDepartTime(String id, Timestamp newDepartTime){
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
         try {
@@ -80,10 +77,8 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
-
     }
-    public Flight updateFlightSeats(String id, Integer newReservedSeats){
+    public void updateFlightSeats(String id, Integer newReservedSeats){
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
         try {
@@ -96,10 +91,8 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
-
     }
-    public Flight updateFlightSeatPrice(String id, Float newSeatPrice){
+    public void updateFlightSeatPrice(String id, Float newSeatPrice){
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
         try {
@@ -112,11 +105,9 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
-
     }
 
-    public Flight updateFlight(String id, Integer routeID, Integer airplaneID, Timestamp departTime, Integer reservedSeats, Float seatPrice)
+    public void updateFlight(String id, Integer routeID, Integer airplaneID, Timestamp departTime, Integer reservedSeats, Float seatPrice)
     {
         Integer flightID = Integer.parseInt(id);
         Flight flight = null;
@@ -144,6 +135,5 @@ public class EmployeeService {
         catch (Exception e){
             e.printStackTrace();
         }
-        return flight;
     }
 }
