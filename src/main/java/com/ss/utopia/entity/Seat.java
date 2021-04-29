@@ -1,3 +1,4 @@
+
 package com.ss.utopia.entity;
 
 import java.sql.ResultSet;

@@ -1,7 +1,6 @@
+
 package com.ss.utopia.dao;
 
-import com.ss.utopia.entity.Airplane;
-import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.Seat;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;

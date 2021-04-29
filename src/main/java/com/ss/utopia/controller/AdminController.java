@@ -1,13 +1,12 @@
+
 package com.ss.utopia.controller;
 
 import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.entity.*;
 import com.ss.utopia.service.AdminService;
-import com.ss.utopia.service.TravelerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
