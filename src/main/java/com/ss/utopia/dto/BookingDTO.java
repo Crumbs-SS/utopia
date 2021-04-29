@@ -10,6 +10,7 @@ public class BookingDTO {
     private Integer userId;
     private BookingGuest bookingGuest;
     private String stripeId;
+    private String confirmationCode;
     private List<Integer> passengerIds;
 
     public Integer getId() { return id; }
@@ -46,6 +47,14 @@ public class BookingDTO {
 
     public void setStripeId(String stripeId) {
         this.stripeId = stripeId;
+    }
+
+    public String getConfirmationCode() {
+        return confirmationCode;
+    }
+
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
     }
 
     public List<Integer> getPassengerIds() {

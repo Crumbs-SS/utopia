@@ -62,23 +62,62 @@ public class AdminController extends BaseController {
     public String addBooking(@RequestBody BookingDTO bdto) {
         return as.addBooking(bdto);
     }
-/*
+
     @PutMapping("/bookings/{id}")
     public String updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
         bdto.setId(id);
         return as.updateBooking(bdto);
     }
 
-    @DeleteMapping("bookings/{id}")
+    @DeleteMapping("/bookings/{id}")
     public String deleteBooking(@PathVariable int id) {
         return as.deleteBooking(id);
     }
 
-    @PutMapping("bookingsUncancel/{id}")
+    @PutMapping("/bookingsCancel/{id}")
+    public String cancelBooking(@PathVariable int id) {
+        return as.cancelBooking(id);
+    }
+
+    @PutMapping("/bookingsUncancel/{id}")
     public String uncancelBooking(@PathVariable int id) {
         return as.uncancelBooking(id);
     }
-*/
+
+    // Passengers --------------------------------------------------
+
+    @GetMapping("/passengers")
+    public List<Passenger> getPassengers() {
+        return as.getPassengers();
+    }
+
+    @GetMapping("/passengers/{id}")
+    public Passenger getPassengerById(@PathVariable int id) {
+        return as.getPassengerById(id);
+    }
+
+    @GetMapping("/passengers/bookings/{bookingId}")
+    public List<Passenger> getPassengersByBookingId(@PathVariable int bookingId) {
+        return as.getPassengersByBookingId(bookingId);
+    }
+
+    @PostMapping("/passengers/bookings/{bookingId}")
+    public String addPassenger(@PathVariable int bookingId, @RequestBody Passenger p) {
+        p.getBooking().setId(bookingId);
+        return as.addPassenger(p);
+    }
+
+    @PutMapping("/passengers/{id}")
+    public String updatePassenger(@PathVariable int id, @RequestBody Passenger p) {
+        p.setId(id);
+        return as.updatePassenger(p);
+    }
+
+    @DeleteMapping("/passengers/{id}")
+    public String deletePassenger(@PathVariable int id) {
+        return as.deletePassenger(id);
+    }
+
     // Airports ----------------------------------------------------
     @GetMapping("/airports")
     public List<Airport> getAirports() {

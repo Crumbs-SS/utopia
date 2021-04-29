@@ -13,9 +13,8 @@ public class Passenger {
     private Date date;
     private String gender;
     private String address;
-    private String email;
-    private String phone;
 
+    public Passenger() {}
     public Passenger(Booking booking, String given_name, String family_name, Date date, String gender, String address) {
         this.booking = booking;
         this.given_name = given_name;
@@ -23,22 +22,6 @@ public class Passenger {
         this.date = date;
         this.gender = gender;
         this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public Integer getId() {

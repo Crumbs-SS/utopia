@@ -21,9 +21,8 @@ public class BookingAgentDAO extends BaseDAO implements ResultSetExtractor<List<
     }
 
     public void deleteBookingAgent(BookingAgent bookingAgent) {
-        jdbcTemplate.update("DELETE FROM booking_agent WHERE booking_id = ? AND agent_id = ?",
-                bookingAgent.getBooking().getId(),
-                bookingAgent.getAgent().getId()
+        jdbcTemplate.update("DELETE FROM booking_agent WHERE booking_id = ?",
+                bookingAgent.getBooking().getId()
         );
     }
 

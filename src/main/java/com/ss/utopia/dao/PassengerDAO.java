@@ -25,8 +25,8 @@ public class PassengerDAO extends BaseDAO implements ResultSetExtractor<List<Pas
 
     }
 
-    public void updatePassenger(Passenger passenger) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("UPDATE passenger SET booking_id = ?, given_name = ?, family_name = ?, dob = ?, gender = ?, address = ? " +
+    public int updatePassenger(Passenger passenger) throws SQLException, ClassNotFoundException{
+        return jdbcTemplate.update("UPDATE passenger SET booking_id = ?, given_name = ?, family_name = ?, dob = ?, gender = ?, address = ? " +
                         "WHERE id = ?",
                 passenger.getBooking().getId(),
                 passenger.getGiven_name(),
@@ -37,8 +37,8 @@ public class PassengerDAO extends BaseDAO implements ResultSetExtractor<List<Pas
                 passenger.getId());
     }
 
-    public void deletePassenger(Passenger passenger) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("DELETE FROM passenger WHERE id = ?", passenger.getId());
+    public int deletePassenger(Passenger passenger) throws SQLException, ClassNotFoundException{
+        return jdbcTemplate.update("DELETE FROM passenger WHERE id = ?", passenger.getId());
     }
 
     public List<Passenger> getPassengersByBooking(Booking booking) throws  SQLException, ClassNotFoundException{
