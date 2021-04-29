@@ -18,21 +18,26 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Passenger> passengers = new ArrayList<>();
 
-    public Booking(Boolean isActive, String confirmationCode) {
-        this.isActive = isActive;
-        this.confirmationCode = confirmationCode;
-    }
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingUser> bookingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingAgent> bookingAgents = new ArrayList<>();
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private BookingPayment bookingPayment;
-
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private BookingGuest bookingGuest;
 
     public Booking(){}
+
+    public Booking(Boolean isActive, String confirmationCode) {
+        this.isActive = isActive;
+        this.confirmationCode = confirmationCode;
+    }
 
     public Booking(Integer bookingId) {
         this.id = bookingId;

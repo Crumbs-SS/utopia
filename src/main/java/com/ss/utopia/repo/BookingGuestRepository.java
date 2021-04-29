@@ -12,5 +12,4 @@ public interface BookingGuestRepository extends JpaRepository<BookingGuest, Inte
 
     @Query("SELECT bg FROM booking_guest bg WHERE bg.booking = ?1")
     BookingGuest getBookingGuestByBooking(Booking booking);
-
 }
