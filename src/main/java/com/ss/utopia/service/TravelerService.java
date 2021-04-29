@@ -80,7 +80,7 @@ public class TravelerService {
         return booking;
     }
 
-    public void cancelBooking(String bookingId){
+    public boolean cancelBooking(String bookingId){
         try{
             Integer id = Integer.parseInt(bookingId);
             Booking booking = bookingRepository.findById(id).orElseThrow();
@@ -96,7 +96,11 @@ public class TravelerService {
         }catch(Exception e){
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
+            return false;
         }
+
+        return true;
     }
 
     public List<Booking> getAllBookings(){
