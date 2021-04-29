@@ -1,10 +1,9 @@
 package com.ss.utopia.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "route")
 public class Route {
@@ -19,6 +18,9 @@ public class Route {
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Airport desAirport;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "route")
+    private List<Flight> flights = new ArrayList<>();
 
     public Route(){
 

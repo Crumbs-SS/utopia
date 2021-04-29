@@ -1,9 +1,8 @@
 package com.ss.utopia.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +10,19 @@ import java.util.List;
 public class Airport {
 
     @Id
+    @Column(name = "iata_id")
     private String airportCode;
+
+    @Column(name = "city")
     private String cityName;
 
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "oriAirport")
     List<Route> originRoutes = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "destAirport")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "desAirport")
     List<Route> destinationRoutes = new ArrayList<>();
 
     public Airport(){
