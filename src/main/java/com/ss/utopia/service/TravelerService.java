@@ -1,6 +1,7 @@
 package com.ss.utopia.service;
 
 import com.ss.utopia.entity.*;
+import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,108 +9,80 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 @Service
 @Transactional(rollbackFor = { Exception.class })
 public class TravelerService {
-    @Autowired AirplaneRepository airplaneRepository;
-    @Autowired AirplaneTypeRepository airplaneTypeRepository;
-    @Autowired RouteRepository routeRepository;
-    @Autowired AirportRepository airportRepository;
-    @Autowired UserRoleRepository userRoleRepository;
-    @Autowired UserRepository userRepository;
+
     @Autowired FlightRepository flightRepository;
+    @Autowired AirplaneRepository airplaneRepository;
+    @Autowired RouteRepository routeRepository;
+    @Autowired UserRepository userRepository;
     @Autowired BookingRepository bookingRepository;
+    @Autowired BookingUserRepository bookingUserRepository;
+    @Autowired BookingPaymentRepository bookingPaymentRepository;
     @Autowired FlightBookingRepository flightBookingRepository;
     @Autowired PassengerRepository passengerRepository;
-    @Autowired BookingPaymentRepository bookingPaymentRepository;
 
 
-    public List<AirplaneType> getAllAirplaneTypes(){
-        return airplaneTypeRepository.findAll();
+    public List<Flight> getFlights() {
+        List<Flight> flights = null;
+        try {
+            flights = flightRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flights;
     }
 
-    public List<Airplane> getAirplanesByCapacity(String maxCapacity) {
-        return airplaneRepository.findAirplanesByMaxCapacity(Integer.parseInt(maxCapacity));
+    public User getUser(String id){
+        Integer userId = Integer.parseInt(id);
+        User user = null;
+
+        try{
+            user = userRepository.findById(userId).orElseThrow();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
     }
 
-    public List<Airplane> getAirplanes(){
-        return airplaneRepository.findAll();
+    public User login(User body){
+        User user = null;
+        try{
+            user = userRepository.authenticateUser(body.getUsername(), body.getPassword());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return user;
     }
 
-    public List<Route> getRoutes(){
-        return routeRepository.findAll();
+    public Booking addBooking(BookingDTO bookingDTO){
+        Booking booking = null;
+        try{
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return booking;
     }
 
-    public List<Airport> getAirports(){
-        return airportRepository.findAll();
-    }
+    public void cancelBooking(String bookingId){
+        try{
+            Integer id = Integer.parseInt(bookingId);
+            Booking booking = bookingRepository.findById(id).orElseThrow();
+            if(booking != null){
+                BookingPayment bookingPayment = bookingPaymentRepository.getBookingPaymentByBooking(booking);
 
-    public Airport getAirport(String airportCode){
-        return airportRepository.findById(airportCode).get();
-    }
+                booking.setIsActive(false);
+                bookingPayment.setRefunded(true);
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    public List<UserRole> getAllUserRoles(){
-        return  userRoleRepository.findAll();
-    }
-
-    public User authenticateUser(User user){
-        return userRepository.authenticateUser(user.getUsername(), user.getPassword());
-    }
-
-    public List<Flight> getAllFlights(){
-        return flightRepository.findAll();
-    }
-
-    public Flight getFlight(Integer id){
-        return flightRepository.getOne(id);
-    }
-
-    public Booking getBooking(String confirmationCode){
-        return bookingRepository.getBookingByConfirmationCode(confirmationCode);
-    }
-
-    public List<Booking> getAllBookings(){
-        return bookingRepository.findAll();
-    }
-
-    public FlightBooking getFlightBookingByFlight(String flightId){
-       List<FlightBooking> flightBookings = flightBookingRepository.
-               findByFlight(flightRepository.findById(Integer.parseInt(flightId)).get());
-       if (!flightBookings.isEmpty())
-           return flightBookings.get(0);
-       return null;
-    }
-
-    public FlightBooking getFlightBookingByBooking(String bookingId){
-        List<FlightBooking> flightBookings = flightBookingRepository
-                .findByBooking(bookingRepository.findById(Integer.parseInt(bookingId)).get());
-        if (!flightBookings.isEmpty())
-            return flightBookings.get(0);
-        return null;
-    }
-
-    public List<FlightBooking> getAllFlightBookings(){
-        return flightBookingRepository.findAll();
-    }
-
-    public List<Passenger> getPassengersByBooking(){
-        return passengerRepository.getPassengersByBooking(bookingRepository.findById(1).get());
-    }
-
-    public List<BookingPayment> getAllBookingPayments(){
-        return bookingPaymentRepository.findAll();
-    }
-
-    public BookingPayment getBookingPaymentsByStripeId(String stripeId){
-        return bookingPaymentRepository.getBookingByStripeId(stripeId);
-    }
-
-    public BookingPayment getBookingPaymentsByBooking(Booking booking){
-        return bookingPaymentRepository.getBookingPaymentByBooking(booking);
+                bookingRepository.save(booking);
+                bookingPaymentRepository.save(bookingPayment);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
