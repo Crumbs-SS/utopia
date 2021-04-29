@@ -3,6 +3,7 @@ package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -18,7 +19,7 @@ public class AirplaneType {
     private Integer maxCapacity;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "airplaneType")
+    @OneToMany(mappedBy = "airplaneType", cascade = CascadeType.ALL)
     private List<Airplane> airplanes = new ArrayList<>();
 
     public AirplaneType() {}
