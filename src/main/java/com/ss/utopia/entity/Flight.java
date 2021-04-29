@@ -1,7 +1,6 @@
 package com.ss.utopia.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import java.util.List;
 public class Flight {
 
     @Id
+    @PrimaryKeyJoinColumn
     private Integer id;
 
     @ManyToOne
@@ -18,7 +18,7 @@ public class Flight {
     private Airplane airplane;
 
     @Column(name = "departure_time")
-    private Timestamp departTime;
+    private String departTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
     private List<FlightBooking> flightBookings = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Flight {
 
     }
 
-    public Flight(Timestamp departTime, Integer reservedSeats, Float seatPrice) {
+    public Flight(String departTime, Integer reservedSeats, Float seatPrice) {
         this.departTime = departTime;
         this.reservedSeats = reservedSeats;
         this.seatPrice = seatPrice;
@@ -64,11 +64,11 @@ public class Flight {
         this.airplane = airplane;
     }
 
-    public Timestamp getDepartTime() {
+    public String getDepartTime() {
         return departTime;
     }
 
-    public void setDepartTime(Timestamp departTime) {
+    public void setDepartTime(String departTime) {
         this.departTime = departTime;
     }
 
