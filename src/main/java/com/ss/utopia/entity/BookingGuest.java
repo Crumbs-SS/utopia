@@ -9,6 +9,8 @@ public class BookingGuest {
     private String contactEmail;
     private String contactPhone;
 
+    public BookingGuest() {}
+
     public BookingGuest(Booking booking, String contactEmail, String contactPhone) {
         this.booking = booking;
         this.contactEmail = contactEmail;

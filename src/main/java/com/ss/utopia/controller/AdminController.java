@@ -1,5 +1,6 @@
 package com.ss.utopia.controller;
 
+import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.entity.*;
 import com.ss.utopia.service.AdminService;
 import com.ss.utopia.service.TravelerService;
@@ -16,18 +17,17 @@ public class AdminController extends BaseController {
     @Autowired
     AdminService as;
 
+    // Flights ------------------------------------------------
     @GetMapping("/flights")
     public List<Flight> getFlights() {
         return as.getFlights();
     }
 
-    // TODO
     @PostMapping("/flights")
     public String addFlight(@RequestBody Flight f) {
         return as.addFlight(f);
     }
 
-    // TODO
     @PutMapping("/flights/{flightId}")
     public String updateFlight(@PathVariable int flightId, @RequestBody Flight f) {
         f.setId(flightId);
@@ -39,6 +39,48 @@ public class AdminController extends BaseController {
         return as.deleteFlight(flightId);
     }
 
+    //Seats ----------------------------------------------------------------
+    @GetMapping("/seats")
+    public List<Seat> getSeats(){return as.getSeats();}
+
+    @PostMapping("/seats")
+    public void addSeats(@RequestBody Seat seats){ as.addSeats(seats); }
+
+    @PutMapping("/seats/{id}")
+    public void updateSeats(@RequestBody Seat seat) { as.updateSeats(seat);}
+
+    @DeleteMapping("/seats/{id}")
+    public void deleteSeats(@PathVariable int id){ as.deleteSeats(id); }
+
+
+    // Bookings ----------------------------------------------------
+    @GetMapping("/bookings")
+    public List<Booking> getBookings() {
+        return as.getBookings();
+    }
+
+    @PostMapping("/bookings")
+    public String addBooking(@RequestBody BookingDTO bdto) {
+        return as.addBooking(bdto);
+    }
+/*
+    @PutMapping("/bookings/{id}")
+    public String updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
+        bdto.setId(id);
+        return as.updateBooking(bdto);
+    }
+
+    @DeleteMapping("bookings/{id}")
+    public String deleteBooking(@PathVariable int id) {
+        return as.deleteBooking(id);
+    }
+
+    @PutMapping("bookingsUncancel/{id}")
+    public String uncancelBooking(@PathVariable int id) {
+        return as.uncancelBooking(id);
+    }
+*/
+    // Airports ----------------------------------------------------
     @GetMapping("/airports")
     public List<Airport> getAirports() {
         return as.getAirports();
@@ -55,13 +97,12 @@ public class AdminController extends BaseController {
         return as.updateAirport(a);
     }
 
-    // TODO - JDBCTemplate.update returns an int, 0 = no modifications.
     @DeleteMapping("/airports/{airportCode}")
     public String deleteAirport(@PathVariable String airportCode) {
         return as.deleteAirport(airportCode);
     }
 
-
+    // Travelers -------------------------------------------------------
     @GetMapping("/travelers")
     public List<User> getTravelers() {
         return as.getTravelers();
@@ -86,6 +127,7 @@ public class AdminController extends BaseController {
         return as.deleteTraveler(id);
     }
 
+    // Employees --------------------------------------------
     @GetMapping("/employees")
     public List<User> getEmployees() {
         return as.getEmployees();
@@ -110,17 +152,6 @@ public class AdminController extends BaseController {
         return as.deleteEmployee(id);
     }
 
-    //Seats
-    @GetMapping("/seats")
-    public List<Seat> getSeats(){return as.getSeats();}
 
-    @PostMapping("/addSeats")
-    public void addSeats(@RequestBody Seat seats){ as.addSeats(seats); }
-
-    @PutMapping("/updateSeats/{id}")
-    public void updateSeats(@RequestBody Seat seat) { as.updateSeats(seat);}
-
-    @DeleteMapping("/deleteSeats/{id}")
-    public void deleteSeats(@PathVariable int id){ as.deleteSeats(id); }
 
 }

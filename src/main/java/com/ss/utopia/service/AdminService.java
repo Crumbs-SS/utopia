@@ -2,14 +2,13 @@ package com.ss.utopia.service;
 
 
 import com.ss.utopia.dao.*;
-import com.ss.utopia.entity.Airport;
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.Seat;
-import com.ss.utopia.entity.User;
+import com.ss.utopia.dto.BookingDTO;
+import com.ss.utopia.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,20 @@ public class AdminService {
     UserDAO udao;
     @Autowired
     SeatDAO seatDAO;
+    @Autowired
+    BookingDAO bdao;
+    @Autowired
+    BookingUserDAO bookingUserDAO;
+    @Autowired
+    BookingAgentDAO bookingAgentDAO;
+    @Autowired
+    BookingGuestDAO bookingGuestDAO;
+    @Autowired
+    BookingPaymentDAO bookingPaymentDAO;
+    @Autowired
+    FlightBookingDAO flightBookingDAO;
+    @Autowired
+    PassengerDAO passengerDAO;
 
     public List<Flight> getFlights() {
         List<Flight> flights = null;
@@ -304,4 +317,98 @@ public class AdminService {
             e.printStackTrace();
         }
     }
+
+    public List<Booking> getBookings() {
+        List<Booking> bookings = null;
+        try {
+            bookings = bdao.getAllBookings();
+
+            /*
+            for (Booking b : bookings) {
+
+            }
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    public String addBooking(BookingDTO bdto){
+        try{
+            if (null == bdto.getUserId() && null == bdto.getBookingGuest()) {
+                return "Could not add booking. No booking agent/user or guest specified.";
+            }
+            int amountOfBookings = bdao.getAllBookings().size();
+            Booking booking = new Booking(true, "CONFIRMATION-" + amountOfBookings);
+            Flight flight = fdao.getFlightFromId(bdto.getFlightId());
+            String stripeId = bdto.getStripeId();
+
+            bdao.addBooking(booking);
+            booking = bdao.getBookingByCode(booking.getConfirmationCode());
+
+            bookingPaymentDAO.addBookingPayment(new BookingPayment(stripeId, false, booking));
+            flightBookingDAO.addFlightBooking(new FlightBooking(flight, booking));
+
+            if (null != bdto.getUserId()) {
+                User user = udao.getUserById(bdto.getUserId());
+                UserRole role = user.getUserRole();
+                if (role.getName().equals("ADMIN")) { throw new IllegalArgumentException(); }
+                else if (role.getName().equals("AGENT")) {
+                    bookingAgentDAO.addBookingAgent(new BookingAgent(booking, user));
+                }
+                else if (role.getName().equals("CUSTOMER")) {
+                    bookingUserDAO.addBookingUser(new BookingUser(user, booking));
+                }
+            }
+            else {
+                bdto.getBookingGuest().setBooking(booking);
+                bookingGuestDAO.addBookingGuest(bdto.getBookingGuest());
+            }
+
+            return "Booking added.";
+        }catch(Exception e){
+            e.printStackTrace();
+            return "Booking could not be added.";
+        }
+    }
+/*
+    public String updateBooking(BookingDTO bdto) {
+        // let them change associated flight
+        // let them change stripe_id
+        // let them change confirmation code
+        // let them change booking agent/user/guest
+        try {
+            Booking existingBooking = bdao.getBookingById(bdto.getId());
+            if (null == existingBooking) {
+                return "Could not update booking.";
+            }
+            Booking newBooking = new Booking();
+            newBooking.setId(existingBooking.getId());
+            newBooking.setIsActive(existingBooking.getIsActive());
+
+            BookingPayment existingBookingPayment =
+                    bookingPaymentDAO.getBookingPaymentByBooking(existingBooking);
+            FlightBooking existingFlightBooking =
+                    flightBookingDAO.getFlightBookingByBooking(existingBooking);
+
+
+
+            User user = udao.getUserById(bdto.getUserId());
+            Flight flight = fdao.getFlightFromId(bdto.getFlightId());
+            String stripeId = bdto.getStripeId();
+
+            bdao.addBooking(booking);
+            booking = bdao.getBookingByCode(booking.getConfirmationCode());
+
+            bookingUserDAO.addBookingUser(new BookingUser(user, booking));
+            bookingPaymentDAO.addBookingPayment(new BookingPayment(stripeId, false, booking));
+            flightBookingDAO.addFlightBooking(new FlightBooking(flight, booking));
+            return "Booking added.";
+        }catch(Exception e){
+            e.printStackTrace();
+            return "Booking could not be added.";
+        }
+    }
+*/
 }

@@ -1,12 +1,20 @@
 package com.ss.utopia.dto;
 
+import com.ss.utopia.entity.BookingGuest;
+
 import java.util.List;
 
 public class BookingDTO {
+    private Integer id;
     private Integer flightId;
     private Integer userId;
+    private BookingGuest bookingGuest;
     private String stripeId;
     private List<Integer> passengerIds;
+
+    public Integer getId() { return id; }
+
+    public void setId(Integer id) { this.id = id; }
 
     public Integer getFlightId() {
         return flightId;
@@ -22,6 +30,14 @@ public class BookingDTO {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public BookingGuest getBookingGuest() {
+        return bookingGuest;
+    }
+
+    public void setBookingGuest(BookingGuest bookingGuest) {
+        this.bookingGuest = bookingGuest;
     }
 
     public String getStripeId() {
