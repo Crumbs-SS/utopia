@@ -14,28 +14,16 @@ public class BookingDTO {
         return flightId;
     }
 
-    public void setFlightId(Integer flightId) {
-        this.flightId = flightId;
-    }
-
     public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public String getStripeId() {
         return stripeId;
     }
 
-    public void setStripeId(String stripeId) {
-        this.stripeId = stripeId;
-    }
-
     public List<Passenger> getPassengers() {
         return passengers;
     }
-
 }

@@ -1,6 +1,8 @@
 package com.ss.utopia.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "user")
 public class User {
@@ -11,6 +13,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private UserRole userRole;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookingUser> bookingUsers = new ArrayList<>();
 
     private String givenName;
     private String familyName;
@@ -98,5 +103,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<BookingUser> getBookingUsers() {
+        return bookingUsers;
+    }
+
+    public void setBookingUsers(List<BookingUser> bookingUsers) {
+        this.bookingUsers = bookingUsers;
     }
 }

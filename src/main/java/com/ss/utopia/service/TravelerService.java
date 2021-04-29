@@ -6,6 +6,7 @@ import com.ss.utopia.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ public class TravelerService {
     @Autowired BookingPaymentRepository bookingPaymentRepository;
     @Autowired FlightBookingRepository flightBookingRepository;
     @Autowired PassengerRepository passengerRepository;
-
 
     public List<Flight> getFlights() {
         List<Flight> flights = null;
@@ -61,21 +61,23 @@ public class TravelerService {
         Booking booking = null;
         try{
             String confirmationCode = "CONFIRMATION-" + (bookingRepository.findAll().size() + 1);
-
             booking = bookingRepository.saveAndFlush(new Booking(true, confirmationCode));
+
             Flight flight = flightRepository.findById(bookingDTO.getFlightId()).orElseThrow();
             User user = userRepository.findById(bookingDTO.getUserId()).orElseThrow();
 
+            BookingPayment bookingPayment = new BookingPayment(booking, bookingDTO.getStripeId(), false);
+            bookingPaymentRepository.save(bookingPayment);
             flightBookingRepository.save(new FlightBooking(flight, booking));
-            bookingPaymentRepository.save(new BookingPayment(bookingDTO.getStripeId(), false));
-            bookingUserRepository.save(new BookingUser(user, booking));
+            bookingUserRepository.save(new BookingUser(booking, user));
 
             setPassengers(booking, bookingDTO.getPassengers());
         }catch(Exception e){
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
 
-        return null;
+        return booking;
     }
 
     public void cancelBooking(String bookingId){
@@ -93,9 +95,15 @@ public class TravelerService {
             }
         }catch(Exception e){
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
 
+    public List<Booking> getAllBookings(){
+        return bookingRepository.findAll();
+    }
+
+//    Private
     private void setPassengers(Booking booking, List<Passenger> passengers){
         for (Passenger passenger : passengers) {
             try{
@@ -106,4 +114,5 @@ public class TravelerService {
 
         }
     }
+
 }

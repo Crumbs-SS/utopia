@@ -25,6 +25,12 @@ public class BookingPayment {
         this.refunded = refunded;
     }
 
+    public BookingPayment(Booking booking, String stripeId, boolean b) {
+        this.booking = booking;
+        this.stripeId = stripeId;
+        this.refunded = b;
+    }
+
     public Booking getBooking() {
         return booking;
     }

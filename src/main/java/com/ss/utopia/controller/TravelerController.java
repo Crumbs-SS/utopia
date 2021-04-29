@@ -40,6 +40,12 @@ public class TravelerController {
 
         return travelerService.addBooking(bookingDTO);
     }
+
+    @GetMapping("/bookings")
+    public List<Booking> getBookings(){
+        return travelerService.getAllBookings();
+    }
+
     @PutMapping("/bookings/{id}")
     public void cancelBooking(@PathVariable String id){
         travelerService.cancelBooking(id);

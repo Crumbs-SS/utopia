@@ -25,7 +25,12 @@ public class BookingUser {
     }
 
     public BookingUser() {
+    }
 
+    public BookingUser(Booking booking, User user) {
+        this.id = new BookingUserID(user.getId(), booking.getId());
+        this.booking = booking;
+        this.user = user;
     }
 
     public User getUser() {

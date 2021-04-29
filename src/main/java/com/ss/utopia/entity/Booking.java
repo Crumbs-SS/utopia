@@ -13,7 +13,7 @@ public class Booking {
     private Boolean isActive;
     private String confirmationCode;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "booking")
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
@@ -74,5 +74,17 @@ public class Booking {
 
     public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
+    }
+
+    public List<FlightBooking> getFlightBookings() {
+        return flightBookings;
+    }
+
+    public void setFlightBookings(List<FlightBooking> flightBookings) {
+        this.flightBookings = flightBookings;
+    }
+
+    public void addFlightBooking(FlightBooking flightBooking){
+        this.flightBookings.add(flightBooking);
     }
 }

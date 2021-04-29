@@ -9,7 +9,6 @@ public class BookingGuest {
     @Column(name = "booking_id")
     private Integer id;
 
-
     @MapsId
     @OneToOne
     @JoinColumn(name = "booking_id")

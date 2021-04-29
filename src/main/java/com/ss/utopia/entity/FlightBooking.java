@@ -9,12 +9,12 @@ public class FlightBooking {
     @EmbeddedId
     private FlightBookingID id;
 
-    @MapsId("flight_id")
-    @ManyToOne(optional = false)
+    @MapsId("flightId")
+    @ManyToOne
     Flight flight;
 
-    @MapsId("booking_id")
-    @ManyToOne(optional = false)
+    @MapsId("bookingId")
+    @ManyToOne
     Booking booking;
 
     public FlightBooking() {
@@ -24,6 +24,19 @@ public class FlightBooking {
     public FlightBooking(Flight flight, Booking booking){
         this.flight = flight;
         this.booking = booking;
+        this.id = new FlightBookingID(flight.getId(), booking.getId());
+    }
+
+    public FlightBooking(FlightBookingID flightBookingID) {
+        this.id = flightBookingID;
+    }
+
+    public void setId(FlightBookingID id) {
+        this.id = id;
+    }
+
+    public FlightBookingID getId() {
+        return id;
     }
 
     public Flight getFlight() {
@@ -41,6 +54,4 @@ public class FlightBooking {
     public void setBooking(Booking booking) {
         this.booking = booking;
     }
-
-
 }

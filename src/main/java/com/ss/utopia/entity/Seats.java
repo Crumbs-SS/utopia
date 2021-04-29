@@ -12,9 +12,9 @@ public class Seats {
     @Column(name = "flight_id")
     private Integer id;
 
+    @MapsId
     @OneToOne
     @JoinColumn(name = "flight_id")
-    @MapsId
     private Flight flight;
 
     private Integer first;

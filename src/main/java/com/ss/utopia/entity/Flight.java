@@ -8,7 +8,6 @@ import java.util.List;
 public class Flight {
 
     @Id
-    @PrimaryKeyJoinColumn
     private Integer id;
 
     @ManyToOne
@@ -22,6 +21,10 @@ public class Flight {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
     private List<FlightBooking> flightBookings = new ArrayList<>();
+
+    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Seats seats;
 
     private Integer reservedSeats;
     private Float seatPrice;
@@ -86,6 +89,18 @@ public class Flight {
 
     public void setSeatPrice(Float seatPrice) {
         this.seatPrice = seatPrice;
+    }
+
+    public List<FlightBooking> getFlightBookings() {
+        return flightBookings;
+    }
+
+    public void setFlightBookings(List<FlightBooking> flightBookings) {
+        this.flightBookings = flightBookings;
+    }
+
+    public void addFlightBooking(FlightBooking flightBooking){
+        flightBookings.add(flightBooking);
     }
 
 }
