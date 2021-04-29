@@ -1,6 +1,7 @@
 package com.ss.utopia.dao;
 
 import com.ss.utopia.entity.Flight;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public class FlightDAO extends BaseDAO implements ResultSetExtractor<List<Flight
 
     public Integer addFlight(Flight flight) throws SQLException, ClassNotFoundException {
         Integer key = getAllFlights().get(getAllFlights().size() - 1).getId() + 1;
-        jdbcTemplate.update("INSERT INTO flight(id, route_id, airplane_id, departure_time, reserved_seats," +
+        int result = jdbcTemplate.update("INSERT INTO flight(id, route_id, airplane_id, departure_time, reserved_seats," +
                 " seat_price) VALUES(?, ?, ?, ?, ?, ?)",
                 key,
                 flight.getRoute().getId(),
@@ -24,21 +25,23 @@ public class FlightDAO extends BaseDAO implements ResultSetExtractor<List<Flight
                 flight.getSeatPrice());
 
         flight.setId(key);
-        return key;
+        return result;
     }
 
-    public void updateFlight(Flight flight) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("UPDATE flight SET route_id = ?, airplane_id = ?, departure_time = ?, reserved_seats = ?, " +
+    public int updateFlight(Flight flight) throws DataAccessException {
+        int result = jdbcTemplate.update("UPDATE flight SET route_id = ?, airplane_id = ?, departure_time = ?, reserved_seats = ?, " +
                 "seat_price = ? WHERE id = ?", flight.getRoute().getId(),
                 flight.getAirplane().getId(),
                 flight.getDepartTime(),
                 flight.getReservedSeats(),
                 flight.getSeatPrice(),
                 flight.getId());
+
+        return result;
     }
 
-    public void deleteFlight(Flight flight) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("DELETE FROM flight WHERE id = ?", flight.getId());
+    public int deleteFlight(Flight flight) throws SQLException, ClassNotFoundException{
+        return jdbcTemplate.update("DELETE FROM flight WHERE id = ?", flight.getId());
     }
 
     public Flight getFlightFromId(Integer id) throws SQLException, ClassNotFoundException {

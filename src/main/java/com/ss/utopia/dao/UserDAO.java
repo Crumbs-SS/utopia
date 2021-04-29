@@ -25,8 +25,8 @@ public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
 
     }
 
-    public void updateUser(User user) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("UPDATE user SET role_id = ?, given_name = ?, family_name = ?, username = ?, " +
+    public int updateUser(User user) throws SQLException, ClassNotFoundException{
+        return jdbcTemplate.update("UPDATE user SET role_id = ?, given_name = ?, family_name = ?, username = ?, " +
                 "email = ?, password = ?, phone = ? WHERE user.id = ?", user.getUserRole().getId(),
                 user.getGivenName(),
                 user.getFamilyName(),
@@ -38,8 +38,8 @@ public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
 
     }
 
-    public void deleteUser(User user) throws SQLException, ClassNotFoundException{
-        jdbcTemplate.update("DELETE FROM user WHERE id = ?", new Object[]{user.getId()});
+    public int deleteUser(User user) throws SQLException, ClassNotFoundException{
+        return jdbcTemplate.update("DELETE FROM user WHERE id = ?", new Object[]{user.getId()});
     }
 
     public User getUserById(Integer id) throws SQLException, ClassNotFoundException {
@@ -77,14 +77,14 @@ public class UserDAO extends BaseDAO implements ResultSetExtractor<List<User>> {
         return jdbcTemplate.query("""
                 SELECT * FROM utopia.user
                 JOIN user_role ON user_role.id = role_id
-                AND user_role.name = 'Employee'""", this);
+                AND user_role.name = 'AGENT'""", this);
     }
 
     public List<User> getAllTravelers() throws SQLException, ClassNotFoundException{
         return jdbcTemplate.query("""
                 SELECT * FROM utopia.user
                 JOIN user_role ON user_role.id = role_id
-                AND user_role.name = 'Traveler'""", this);
+                AND user_role.name = 'CUSTOMER'""", this);
     }
 
     public List<User> getAllUsers() throws SQLException, ClassNotFoundException {

@@ -1,3 +1,4 @@
+
 package com.ss.utopia.entity;
 
 import java.sql.ResultSet;
@@ -13,6 +14,9 @@ public class Seat {
        this.first = first;
        this.business = business;
        this.economy = economy;
+   }
+   public Seat(Integer id){
+       this.flight = new Flight(id);
    }
 
     public Flight getFlight() {
