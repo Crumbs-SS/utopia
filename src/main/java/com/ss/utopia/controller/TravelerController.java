@@ -52,7 +52,7 @@ public class TravelerController {
     public ResponseEntity<User> loginUser(@RequestBody User user){
         User userFound = travelerService.login(user);
 
-        return userFound != null ? new ResponseEntity<>(user, HttpStatus.ACCEPTED)
+        return userFound != null ? new ResponseEntity<>(userFound, HttpStatus.ACCEPTED)
                 : new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
     }
 

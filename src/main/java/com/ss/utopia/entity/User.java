@@ -1,5 +1,7 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class User {
     @JoinColumn(name = "role_id")
     private UserRole userRole;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<BookingUser> bookingUsers = new ArrayList<>();
 
