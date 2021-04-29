@@ -10,15 +10,20 @@ public class FlightBooking {
     private FlightBookingID id;
 
     @MapsId("flight_id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     Flight flight;
 
     @MapsId("booking_id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     Booking booking;
 
     public FlightBooking() {
 
+    }
+
+    public FlightBooking(Flight flight, Booking booking){
+        this.flight = flight;
+        this.booking = booking;
     }
 
     public Flight getFlight() {

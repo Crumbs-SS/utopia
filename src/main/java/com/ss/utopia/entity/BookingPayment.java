@@ -18,7 +18,6 @@ public class BookingPayment {
     private Boolean refunded;
 
     public BookingPayment(){
-
     }
 
     public BookingPayment(String stripeId, Boolean refunded) {

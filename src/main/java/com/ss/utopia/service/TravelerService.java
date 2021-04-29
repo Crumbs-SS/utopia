@@ -60,12 +60,22 @@ public class TravelerService {
     public Booking addBooking(BookingDTO bookingDTO){
         Booking booking = null;
         try{
+            String confirmationCode = "CONFIRMATION-" + (bookingRepository.findAll().size() + 1);
 
+            booking = bookingRepository.saveAndFlush(new Booking(true, confirmationCode));
+            Flight flight = flightRepository.findById(bookingDTO.getFlightId()).orElseThrow();
+            User user = userRepository.findById(bookingDTO.getUserId()).orElseThrow();
+
+            flightBookingRepository.save(new FlightBooking(flight, booking));
+            bookingPaymentRepository.save(new BookingPayment(bookingDTO.getStripeId(), false));
+            bookingUserRepository.save(new BookingUser(user, booking));
+
+            setPassengers(booking, bookingDTO.getPassengers());
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        return booking;
+        return null;
     }
 
     public void cancelBooking(String bookingId){
@@ -83,6 +93,17 @@ public class TravelerService {
             }
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    private void setPassengers(Booking booking, List<Passenger> passengers){
+        for (Passenger passenger : passengers) {
+            try{
+                passenger.setBooking(booking);
+                passengerRepository.save(passenger);
+            }catch(Exception e){
+            }
+
         }
     }
 }

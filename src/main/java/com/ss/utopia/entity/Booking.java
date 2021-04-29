@@ -8,6 +8,7 @@ import java.util.List;
 public class Booking {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private Boolean isActive;
     private String confirmationCode;
