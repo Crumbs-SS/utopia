@@ -21,6 +21,8 @@ public class TravelerService {
     @Autowired FlightRepository flightRepository;
     @Autowired BookingRepository bookingRepository;
     @Autowired FlightBookingRepository flightBookingRepository;
+    @Autowired PassengerRepository passengerRepository;
+    @Autowired BookingPaymentRepository bookingPaymentRepository;
 
 
     public List<AirplaneType> getAllAirplaneTypes(){
@@ -71,17 +73,43 @@ public class TravelerService {
         return bookingRepository.getBookingByConfirmationCode(confirmationCode);
     }
 
-//    public FlightBooking getFlightBooking(Flight flight){
-////       List<FlightBooking>
-//    }
-
-    public FlightBooking getFlightBooking(Booking booking){
-        return flightBookingRepository.findByBooking(booking).get(0);
+    public List<Booking> getAllBookings(){
+        return bookingRepository.findAll();
     }
 
-    public FlightBooking getFlightBooking(Flight flight, Booking booking){
-        return flightBookingRepository.findByBookingAndFlight(booking, flight);
+    public FlightBooking getFlightBookingByFlight(String flightId){
+       List<FlightBooking> flightBookings = flightBookingRepository.
+               findByFlight(flightRepository.findById(Integer.parseInt(flightId)).get());
+       if (!flightBookings.isEmpty())
+           return flightBookings.get(0);
+       return null;
     }
 
+    public FlightBooking getFlightBookingByBooking(String bookingId){
+        List<FlightBooking> flightBookings = flightBookingRepository
+                .findByBooking(bookingRepository.findById(Integer.parseInt(bookingId)).get());
+        if (!flightBookings.isEmpty())
+            return flightBookings.get(0);
+        return null;
+    }
 
+    public List<FlightBooking> getAllFlightBookings(){
+        return flightBookingRepository.findAll();
+    }
+
+    public List<Passenger> getPassengersByBooking(){
+        return passengerRepository.getPassengersByBooking(bookingRepository.findById(1).get());
+    }
+
+    public List<BookingPayment> getAllBookingPayments(){
+        return bookingPaymentRepository.findAll();
+    }
+
+    public BookingPayment getBookingPaymentsByStripeId(String stripeId){
+        return bookingPaymentRepository.getBookingByStripeId(stripeId);
+    }
+
+    public BookingPayment getBookingPaymentsByBooking(Booking booking){
+        return bookingPaymentRepository.getBookingPaymentByBooking(booking);
+    }
 }

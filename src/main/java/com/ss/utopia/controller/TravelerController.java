@@ -74,4 +74,33 @@ public class TravelerController {
         return travelerService.getBooking(confirmationCode);
     }
 
+    @GetMapping("/bookings")
+    public List<Booking> getAllBookings(){
+        return travelerService.getAllBookings();
+    }
+
+    @GetMapping("/flight_bookings")
+    public List<FlightBooking> getFlightBookings(){
+        return travelerService.getAllFlightBookings();
+    }
+
+    @GetMapping("/flight_bookings/flight/{flightId}")
+    public FlightBooking getFlightBookingByFlight(@PathVariable String flightId){
+        return travelerService.getFlightBookingByFlight(flightId);
+    }
+
+    @GetMapping("/flight_bookings/booking/{bookingId}")
+    public FlightBooking getFlightBookingByBooking(@PathVariable String bookingId){
+        return travelerService.getFlightBookingByBooking(bookingId);
+    }
+
+    @GetMapping("/booking_payments")
+    public List<BookingPayment> getAllBookingPayments(){
+        return travelerService.getAllBookingPayments();
+    }
+
+    @GetMapping("/booking_payments/{stripeId}")
+    public BookingPayment getBookingPaymentByStripeId(@PathVariable String stripeId){
+        return travelerService.getBookingPaymentsByStripeId(stripeId);
+    }
 }

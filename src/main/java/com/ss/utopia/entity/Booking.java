@@ -1,9 +1,6 @@
 package com.ss.utopia.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +15,22 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<Passenger> passengers = new ArrayList<>();
+
     public Booking(Boolean isActive, String confirmationCode) {
         this.isActive = isActive;
         this.confirmationCode = confirmationCode;
     }
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private BookingPayment bookingPayment;
+
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private BookingGuest bookingGuest;
 
     public Booking(){}
 
@@ -51,5 +60,13 @@ public class Booking {
 
     public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
+    }
+
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public void addPassenger(Passenger passenger) {
+        this.passengers.add(passenger);
     }
 }
