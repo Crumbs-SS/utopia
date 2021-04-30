@@ -1,5 +1,6 @@
 package com.ss.utopia.controller;
 
+import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.entity.*;
 import com.ss.utopia.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AdminController {
     }
 
     @PostMapping("/flights")
-    public Flight addFlight(@RequestBody Flight f) {
+    public String addFlight(@RequestBody Flight f) {
         return as.addFlight(f);
     }
 
@@ -31,26 +32,25 @@ public class AdminController {
     }
 
     @DeleteMapping("/flights/{flightId}")
-    public void deleteFlight(@PathVariable int flightId) {
-        as.deleteFlight(flightId);
+    public String deleteFlight(@PathVariable int flightId) {
+        return as.deleteFlight(flightId);
     }
 
     //Seats ----------------------------------------------------------------
     @GetMapping("/seats")
-    public List<Seats> getSeats(){return as.getSeats();}
+    public List<Seat> getSeats(){return as.getSeats();}
 
     @PostMapping("/seats")
-    public void addSeats(@RequestBody Seats seats){ as.addSeats(seats); }
+    public void addSeats(@RequestBody Seat seats){ as.addSeats(seats); }
 
-    @PutMapping("/seats")
-    public void updateSeats(@RequestBody Seats seat) { as.updateSeats(seat);}
+    @PutMapping("/seats/{id}")
+    public void updateSeats(@RequestBody Seat seat) { as.updateSeats(seat);}
 
     @DeleteMapping("/seats/{id}")
     public void deleteSeats(@PathVariable int id){ as.deleteSeats(id); }
 
 
     // Bookings ----------------------------------------------------
-    /*
     @GetMapping("/bookings")
     public List<Booking> getBookings() {
         return as.getBookings();
@@ -61,22 +61,61 @@ public class AdminController {
         return as.addBooking(bdto);
     }
 
-        @PutMapping("/bookings/{id}")
-        public String updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
-            bdto.setId(id);
-            return as.updateBooking(bdto);
-        }
+    @PutMapping("/bookings/{id}")
+    public String updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
+        bdto.setId(id);
+        return as.updateBooking(bdto);
+    }
 
-        @DeleteMapping("bookings/{id}")
-        public String deleteBooking(@PathVariable int id) {
-            return as.deleteBooking(id);
-        }
+    @DeleteMapping("/bookings/{id}")
+    public String deleteBooking(@PathVariable int id) {
+        return as.deleteBooking(id);
+    }
 
-        @PutMapping("bookingsUncancel/{id}")
-        public String uncancelBooking(@PathVariable int id) {
-            return as.uncancelBooking(id);
-        }
-    */
+    @PutMapping("/bookingsCancel/{id}")
+    public String cancelBooking(@PathVariable int id) {
+        return as.cancelBooking(id);
+    }
+
+    @PutMapping("/bookingsUncancel/{id}")
+    public String uncancelBooking(@PathVariable int id) {
+        return as.uncancelBooking(id);
+    }
+
+    // Passengers --------------------------------------------------
+
+    @GetMapping("/passengers")
+    public List<Passenger> getPassengers() {
+        return as.getPassengers();
+    }
+
+    @GetMapping("/passengers/{id}")
+    public Passenger getPassengerById(@PathVariable int id) {
+        return as.getPassengerById(id);
+    }
+
+    @GetMapping("/passengers/bookings/{bookingId}")
+    public List<Passenger> getPassengersByBookingId(@PathVariable int bookingId) {
+        return as.getPassengersByBookingId(bookingId);
+    }
+
+    @PostMapping("/passengers/bookings/{bookingId}")
+    public String addPassenger(@PathVariable int bookingId, @RequestBody Passenger p) {
+        p.getBooking().setId(bookingId);
+        return as.addPassenger(p);
+    }
+
+    @PutMapping("/passengers/{id}")
+    public String updatePassenger(@PathVariable int id, @RequestBody Passenger p) {
+        p.setId(id);
+        return as.updatePassenger(p);
+    }
+
+    @DeleteMapping("/passengers/{id}")
+    public String deletePassenger(@PathVariable int id) {
+        return as.deletePassenger(id);
+    }
+
     // Airports ----------------------------------------------------
     @GetMapping("/airports")
     public List<Airport> getAirports() {
@@ -84,7 +123,7 @@ public class AdminController {
     }
 
     @PostMapping("/airports")
-    public Airport addAirport(@RequestBody Airport a) {
+    public String addAirport(@RequestBody Airport a) {
         return as.addAirport(a);
     }
 
@@ -95,8 +134,8 @@ public class AdminController {
     }
 
     @DeleteMapping("/airports/{airportCode}")
-    public void deleteAirport(@PathVariable String airportCode) {
-        as.deleteAirport(airportCode);
+    public String deleteAirport(@PathVariable String airportCode) {
+        return as.deleteAirport(airportCode);
     }
 
     // Travelers -------------------------------------------------------
@@ -107,7 +146,7 @@ public class AdminController {
 
     final int TRAVELER = 2;
     @PostMapping("/travelers")
-    public User addTraveler(@RequestBody User t) {
+    public String addTraveler(@RequestBody User t) {
         t.setUserRole(new UserRole(TRAVELER, "ph"));
         return as.addTraveler(t);
     }
@@ -120,7 +159,9 @@ public class AdminController {
     }
 
     @DeleteMapping("/travelers/{id}")
-    public void deleteTraveler(@PathVariable int id) { as.deleteTraveler(id); }
+    public String deleteTraveler(@PathVariable int id) {
+        return as.deleteTraveler(id);
+    }
 
     // Employees --------------------------------------------
     @GetMapping("/employees")
@@ -130,7 +171,7 @@ public class AdminController {
 
     final int EMPLOYEE = 3;
     @PostMapping("/employees")
-    public User addEmployee(@RequestBody User e) {
+    public String addEmployee(@RequestBody User e) {
         e.setUserRole(new UserRole(EMPLOYEE, "ph"));
         return as.addEmployee(e);
     }
@@ -143,7 +184,9 @@ public class AdminController {
     }
 
     @DeleteMapping("/employees/{id}")
-    public void deleteEmployee(@PathVariable int id) { as.deleteEmployee(id); }
+    public String deleteEmployee(@PathVariable int id) {
+        return as.deleteEmployee(id);
+    }
 
 
 
