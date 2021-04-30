@@ -8,6 +8,7 @@ import java.util.List;
 public class Airplane {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne

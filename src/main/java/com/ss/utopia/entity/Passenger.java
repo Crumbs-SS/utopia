@@ -2,16 +2,14 @@ package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity(name = "passenger")
 public class Passenger {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne
