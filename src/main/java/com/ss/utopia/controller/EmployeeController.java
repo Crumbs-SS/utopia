@@ -4,6 +4,7 @@ import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.Seats;
 import com.ss.utopia.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +17,15 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @GetMapping("/flights/{id}")
-    public Flight getFlight(@PathVariable Integer id){
-        return employeeService.getFlight(id);
-    }
+    public ResponseEntity<Flight> getFlight(@PathVariable Integer id){ return employeeService.getFlight(id); }
 
     @PutMapping("/updateFlight")
-    public String updateFlight(@RequestBody Flight flight) { return employeeService.updateFlight(flight); }
+    public ResponseEntity<String> updateFlight(@RequestBody Flight flight) { return employeeService.updateFlight(flight); }
 
     @GetMapping("/seats")
-    public List<Seats> getSeats(){return employeeService.getSeats();}
+    public ResponseEntity<List<Seats>> getSeats(){ return employeeService.getSeats();}
 
     @PutMapping("/updateSeats")
-    public String updateSeats(@RequestBody Seats seat) { return employeeService.updateSeats(seat);}
+    public ResponseEntity<String> updateSeats(@RequestBody Seats seat) { return employeeService.updateSeats(seat);}
 
 }

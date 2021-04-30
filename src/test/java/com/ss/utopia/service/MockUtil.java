@@ -3,7 +3,6 @@ package com.ss.utopia.service;
 import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.entity.*;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,12 @@ public class MockUtil {
 
        return flights;
     }
+    public static List<Seats> getMockSeats(){
+        List<Seats> seats = new ArrayList<>();
+        seats.add(new Seats());
+        return seats;
+    }
+    public static Seats getSeat(){ return new Seats(1); }
 
     public static User getUser(){
         return new User(
@@ -96,4 +101,6 @@ public class MockUtil {
     private static FlightBookingID getFlightBookingID(){
         return new FlightBookingID(getFlight().getId(), getBooking().getId());
     }
+
+
 }
