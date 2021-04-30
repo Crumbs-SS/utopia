@@ -25,40 +25,39 @@ public class TravelerService {
     @Autowired PassengerRepository passengerRepository;
 
     public List<Flight> getFlights() {
-        List<Flight> flights = null;
+        List<Flight> flights;
         try {
             flights = flightRepository.findAll();
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
         return flights;
     }
 
     public User getUser(String id){
-        Integer userId = Integer.parseInt(id);
-        User user = null;
-
+        User user;
         try{
+            Integer userId = Integer.parseInt(id);
             user = userRepository.findById(userId).orElseThrow();
         }catch (Exception e){
-            e.printStackTrace();
+            return null;
         }
         return user;
     }
 
     public User login(User body){
-        User user = null;
+        User user;
         try{
             user = userRepository.authenticateUser(body.getUsername(), body.getPassword());
         }catch (Exception e){
-            e.printStackTrace();
+            return null;
         }
 
         return user;
     }
 
     public Booking addBooking(BookingDTO bookingDTO){
-        Booking booking = null;
+        Booking booking;
         try{
             String confirmationCode = "CONFIRMATION-" + (bookingRepository.findAll().size() + 1);
             booking = bookingRepository.saveAndFlush(new Booking(true, confirmationCode));
@@ -73,8 +72,8 @@ public class TravelerService {
 
             setPassengers(booking, bookingDTO.getPassengers());
         }catch(Exception e){
-            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
 
         return booking;
@@ -84,19 +83,15 @@ public class TravelerService {
         try{
             Integer id = Integer.parseInt(bookingId);
             Booking booking = bookingRepository.findById(id).orElseThrow();
-            if(booking != null){
-                BookingPayment bookingPayment = bookingPaymentRepository.getBookingPaymentByBooking(booking);
+            BookingPayment bookingPayment = bookingPaymentRepository.getBookingPaymentByBooking(booking);
 
-                booking.setIsActive(false);
-                bookingPayment.setRefunded(true);
+            booking.setIsActive(false);
+            bookingPayment.setRefunded(true);
 
-                bookingRepository.save(booking);
-                bookingPaymentRepository.save(bookingPayment);
-            }
+            bookingRepository.save(booking);
+            bookingPaymentRepository.save(bookingPayment);
         }catch(Exception e){
-            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-
             return false;
         }
 
@@ -114,6 +109,7 @@ public class TravelerService {
                 passenger.setBooking(booking);
                 passengerRepository.save(passenger);
             }catch(Exception e){
+
             }
 
         }

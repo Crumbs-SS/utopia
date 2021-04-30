@@ -16,23 +16,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/traveler")
 public class TravelerController {
-    @Autowired
-    TravelerService travelerService;
+    @Autowired TravelerService travelerService;
 
     @GetMapping("/flights")
-    public List<Flight> getFlights() {
-        return travelerService.getFlights();
+    public ResponseEntity<List<Flight>> getFlights() {
+        List<Flight> flights = travelerService.getFlights();
+
+        return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable String id){
-        return travelerService.getUser(id);
+    public ResponseEntity<User> getUser(@PathVariable String id){
+        User user = travelerService.getUser(id);
+
+        return user != null ? new ResponseEntity<>(user, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
-
     @GetMapping("/bookings")
-    public List<Booking> getBookings(){
-        return travelerService.getAllBookings();
+    public ResponseEntity<List<Booking>> getBookings(){
+        List<Booking> bookingList =  travelerService.getAllBookings();
+
+        return bookingList != null ? new ResponseEntity<>(bookingList, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
     @PutMapping("/bookings/{id}")
@@ -44,6 +51,7 @@ public class TravelerController {
     @PostMapping("/bookings")
     public ResponseEntity<Booking> addBooking(@RequestBody BookingDTO bookingDTO){
         Booking booking = travelerService.addBooking(bookingDTO);
+
         return booking != null ? new ResponseEntity<>(booking, HttpStatus.CREATED)
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }

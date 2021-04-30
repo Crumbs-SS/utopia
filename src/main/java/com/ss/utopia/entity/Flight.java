@@ -1,5 +1,7 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class Flight {
     @Column(name = "departure_time")
     private String departTime;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
