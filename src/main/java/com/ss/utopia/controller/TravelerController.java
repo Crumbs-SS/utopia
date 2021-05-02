@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/traveler")
+@RequestMapping("/utopia/traveler")
 public class TravelerController {
     @Autowired TravelerService travelerService;
 

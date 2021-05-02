@@ -33,8 +33,7 @@ public class AdminController {
 
     @PutMapping("/flights/{flightId}")
     public ResponseEntity<String> updateFlight(@PathVariable int flightId, @RequestBody Flight f) {
-        f.setId(flightId);
-        Flight flight = as.updateFlight(f);
+        Flight flight = as.updateFlight(flightId, f);
         return flight != null ? new ResponseEntity<>("Flight updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Flight could not be updated.", HttpStatus.CONFLICT);
     }
@@ -93,8 +92,7 @@ public class AdminController {
 
     @PutMapping("/bookings/{id}")
     public ResponseEntity<String> updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
-        bdto.setId(id);
-        Booking b = as.updateBooking(bdto);
+        Booking b = as.updateBooking(id, bdto);
         return b != null ? new ResponseEntity<>("Booking updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Booking could not be updated.", HttpStatus.CONFLICT);
     }
@@ -145,16 +143,14 @@ public class AdminController {
 
     @PostMapping("/passengers/bookings/{bookingId}")
     public ResponseEntity<String> addPassenger(@PathVariable int bookingId, @RequestBody Passenger p) {
-        p.getBooking().setId(bookingId);
-        Passenger passenger = as.addPassenger(p);
+        Passenger passenger = as.addPassenger(bookingId, p);
         return passenger != null ? new ResponseEntity<>("Passenger added.", HttpStatus.OK)
                 : new ResponseEntity<>("Passenger could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/passengers/{id}")
     public ResponseEntity<String> updatePassenger(@PathVariable int id, @RequestBody Passenger p) {
-        p.setId(id);
-        Passenger passenger = as.updatePassenger(p);
+        Passenger passenger = as.updatePassenger(id, p);
         return passenger != null ? new ResponseEntity<>("Passenger updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Passenger could not be updated.", HttpStatus.CONFLICT);
     }
@@ -183,8 +179,7 @@ public class AdminController {
 
     @PutMapping("/airports/{airportCode}")
     public ResponseEntity<String> updateAirport(@PathVariable String airportCode, @RequestBody Airport a) {
-        a.setAirportCode(airportCode);
-        Airport airport = as.updateAirport(a);
+        Airport airport = as.updateAirport(airportCode, a);
         return airport != null ? new ResponseEntity<>("Airport updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Airport could not be updated.", HttpStatus.CONFLICT);
     }
@@ -204,10 +199,9 @@ public class AdminController {
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
-    final int TRAVELER = 2;
+
     @PostMapping("/travelers")
     public ResponseEntity<String> addTraveler(@RequestBody User t) {
-        t.setUserRole(new UserRole(TRAVELER, "ph"));
         User traveler = as.addTraveler(t);
         return traveler != null ? new ResponseEntity<>("Traveler added.", HttpStatus.OK)
                 : new ResponseEntity<>("Traveler could not be added.", HttpStatus.CONFLICT);
@@ -215,9 +209,7 @@ public class AdminController {
 
     @PutMapping("/travelers/{id}")
     public ResponseEntity<String> updateTraveler(@PathVariable int id, @RequestBody User t) {
-        t.setId(id);
-        t.setUserRole(new UserRole(TRAVELER, "ph"));
-        User traveler = as.updateTraveler(t);
+        User traveler = as.updateTraveler(id, t);
         return traveler != null ? new ResponseEntity<>("Traveler updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Traveler could not be updated.", HttpStatus.CONFLICT);
     }
@@ -237,10 +229,9 @@ public class AdminController {
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
-    final int EMPLOYEE = 3;
+
     @PostMapping("/employees")
     public ResponseEntity<String> addEmployee(@RequestBody User e) {
-        e.setUserRole(new UserRole(EMPLOYEE, "ph"));
         User employee = as.addEmployee(e);
         return employee != null ? new ResponseEntity<>("Employee added.", HttpStatus.OK)
                 : new ResponseEntity<>("Employee could not be added.", HttpStatus.CONFLICT);
@@ -248,9 +239,7 @@ public class AdminController {
 
     @PutMapping("/employees/{id}")
     public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody User e) {
-        e.setId(id);
-        e.setUserRole(new UserRole(EMPLOYEE, "ph"));
-        User employee = as.updateEmployee(e);
+        User employee = as.updateEmployee(id, e);
         return employee != null ? new ResponseEntity<>("Employee updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Employee could not be updated.", HttpStatus.CONFLICT);
     }

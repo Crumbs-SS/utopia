@@ -28,6 +28,9 @@ public class AdminService {
     @Autowired BookingAgentRepository bookingAgentRepository;
     @Autowired BookingGuestRepository bookingGuestRepository;
 
+    final int TRAVELER = 2;
+    final int EMPLOYEE = 3;
+
     //Read Methods
     public List<Airport> getAirports() {
         try {
@@ -126,6 +129,7 @@ public class AdminService {
         try {
             return airportRepository.save(airport);
         } catch (Exception e) {
+            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         }
@@ -162,6 +166,7 @@ public class AdminService {
 
     public User addEmployee(User user) {
         try {
+            user.setUserRole(new UserRole(EMPLOYEE, "ph"));
             return userRepository.save(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,6 +177,7 @@ public class AdminService {
 
     public User addTraveler(User user) {
         try {
+            user.setUserRole(new UserRole(TRAVELER, "ph"));
             return userRepository.save(user);
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,8 +221,9 @@ public class AdminService {
         }
     }
 
-    public Passenger addPassenger(Passenger p) {
+    public Passenger addPassenger(int id, Passenger p) {
         try {
+            p.getBooking().setId(id);
             return passengerRepository.save(p);
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,8 +327,9 @@ public class AdminService {
 
 
     //update methods
-    public Flight updateFlight(Flight flight) {
+    public Flight updateFlight(int id, Flight flight) {
         try {
+            flight.setId(id);
             Flight temp = flightRepository.findById(flight.getId()).get();
             if (flight.getRoute() == null) flight.setRoute(temp.getRoute());
             if (flight.getAirplane() == null) flight.setAirplane(temp.getAirplane());
@@ -351,8 +359,9 @@ public class AdminService {
         }
     }
 
-    public Airport updateAirport(Airport a) {
+    public Airport updateAirport(String airportCode, Airport a) {
         try {
+            a.setAirportCode(airportCode);
             airportRepository.findById(a.getAirportCode()).get();
             return airportRepository.save(a);
         } catch (Exception e) {
@@ -362,8 +371,10 @@ public class AdminService {
         }
     }
 
-    public User updateTraveler(User t) {
+    public User updateTraveler(int id, User t) {
         try {
+            t.setId(id);
+            t.setUserRole(new UserRole(TRAVELER, "ph"));
             User oldT = userRepository.findById(t.getId()).get();
             if (t.getGivenName() == null) { t.setGivenName(oldT.getGivenName()); }
             if (t.getFamilyName() == null) {  t.setFamilyName(oldT.getFamilyName()); }
@@ -379,8 +390,10 @@ public class AdminService {
         }
     }
 
-    public User updateEmployee(User e) {
+    public User updateEmployee(int id, User e) {
         try {
+            e.setId(id);
+            e.setUserRole(new UserRole(EMPLOYEE, "ph"));
             User oldE = userRepository.findById(e.getId()).get();
             if (e.getGivenName() == null) { e.setGivenName(oldE.getGivenName()); }
             if (e.getFamilyName() == null) { e.setFamilyName(oldE.getFamilyName()); }
@@ -397,12 +410,13 @@ public class AdminService {
     }
 
 
-    public Booking updateBooking(BookingDTO bdto) {
+    public Booking updateBooking(int id, BookingDTO bdto) {
         // let them change associated flight
         // let them change stripe_id
         // let them change confirmation code
         // let them change booking agent/user/guest
         try {
+            bdto.setId(id);
             Booking oldB = bookingRepository.findById(bdto.getId()).get();
             Booking booking = new Booking();
             booking.setId(oldB.getId());
@@ -458,8 +472,9 @@ public class AdminService {
         }
     }
 
-    public Passenger updatePassenger(Passenger p) {
+    public Passenger updatePassenger(int id, Passenger p) {
         try {
+            p.setId(id);
             Passenger oldP = passengerRepository.findById(p.getId()).get();
             if (p.getGivenName() == null) { p.setGivenName(oldP.getGivenName()); }
             if (p.getFamilyName() == null) { p.setFamilyName(oldP.getFamilyName()); }
