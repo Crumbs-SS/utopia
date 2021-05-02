@@ -295,7 +295,7 @@ public class AdminService {
             bookingGuestRepository.delete(new BookingGuest(b, null, null));
             passengerRepository.delete(new Passenger(b, null, null,
                     null, null, null));
-            
+
              */
             return "Booking deleted.";
         } catch (Exception e) {

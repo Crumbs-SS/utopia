@@ -4,8 +4,11 @@ import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.Seats;
 import com.ss.utopia.repo.FlightRepository;
 import com.ss.utopia.repo.SeatRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,14 +22,22 @@ public class EmployeeService {
     @Autowired FlightRepository flightRepository;
     @Autowired SeatRepository seatRepository;
 
-    public Flight getFlight(Integer id){
-        return flightRepository.findById(id).get();
+    public ResponseEntity<Flight> getFlight(Integer id){
+        try {
+            return new ResponseEntity(flightRepository.findById(id).get(), HttpStatus.OK);
+        } catch(Exception e){
+            return new ResponseEntity(e.getCause(), HttpStatus.CONFLICT);
+        }
     }
-    public List<Seats> getSeats() {
-        return seatRepository.findAll();
+    public ResponseEntity<List<Seats>> getSeats() {
+        try {
+            return new ResponseEntity(seatRepository.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(e.getCause(), HttpStatus.CONFLICT);
+        }
     }
 
-    public String updateFlight(Flight flight)  {
+    public ResponseEntity updateFlight(Flight flight)  {
 
         try {
             if (flight.getId() == null) throw new Exception();
@@ -46,15 +57,15 @@ public class EmployeeService {
             flightRepository.save(flight);
         }
         catch(NoSuchElementException e){
-                return "no flight with this id is present, unable to perform update";
+            return new ResponseEntity(e.getCause(),HttpStatus.NOT_FOUND);
             }
         catch(Exception e){
-                return "id was not provided, unable to perform update";
+            return new ResponseEntity(e.getCause(),HttpStatus.BAD_REQUEST);
             }
-        return "update successful";
+        return new ResponseEntity("Update Successful", HttpStatus.OK);
     }
 
-    public String updateSeats(Seats seat) {
+    public ResponseEntity updateSeats(Seats seat) {
         try{
             if(seat.getId() == null) throw new Exception();
 
@@ -71,13 +82,13 @@ public class EmployeeService {
             seatRepository.save(seat);
         }
         catch(NoSuchElementException e){
-            return "no flight with this id is present, unable to perform update";
+            return new ResponseEntity(e.getCause(),HttpStatus.NOT_FOUND);
         }
         catch(Exception e){
-            return "id was not provided, unable to perform update";
+            return new ResponseEntity(e.getCause(),HttpStatus.BAD_REQUEST);
         }
 
-        return "update successful";
+        return new ResponseEntity("Update Successful", HttpStatus.OK);
     }
 
 }

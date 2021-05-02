@@ -29,6 +29,7 @@ public class TravelerService {
         try {
             flights = flightRepository.findAll();
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         return flights;
@@ -40,6 +41,7 @@ public class TravelerService {
             Integer userId = Integer.parseInt(id);
             user = userRepository.findById(userId).orElseThrow();
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
         return user;
@@ -50,6 +52,7 @@ public class TravelerService {
         try{
             user = userRepository.authenticateUser(body.getUsername(), body.getPassword());
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
@@ -73,6 +76,7 @@ public class TravelerService {
             setPassengers(booking, bookingDTO.getPassengers());
         }catch(Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
             return null;
         }
 
@@ -83,7 +87,8 @@ public class TravelerService {
         try{
             Integer id = Integer.parseInt(bookingId);
             Booking booking = bookingRepository.findById(id).orElseThrow();
-            BookingPayment bookingPayment = bookingPaymentRepository.getBookingPaymentByBooking(booking);
+            BookingPayment bookingPayment = bookingPaymentRepository.
+                    getBookingByStripeId(booking.getConfirmationCode());
 
             booking.setIsActive(false);
             bookingPayment.setRefunded(true);
@@ -92,6 +97,7 @@ public class TravelerService {
             bookingPaymentRepository.save(bookingPayment);
         }catch(Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
             return false;
         }
 

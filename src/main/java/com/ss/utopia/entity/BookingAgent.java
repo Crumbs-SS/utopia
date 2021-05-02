@@ -26,6 +26,7 @@ public class BookingAgent {
     public BookingAgent(Booking booking, User agent) {
         this.booking = booking;
         this.agent = agent;
+        this.id = new BookingAgentID(agent.getId(), booking.getId());
     }
 
     public Booking getBooking() {

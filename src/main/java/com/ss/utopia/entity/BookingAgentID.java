@@ -6,43 +6,33 @@ import java.util.Objects;
 
 @Embeddable
 public class BookingAgentID implements Serializable {
-    private Integer agentId;
-    private Integer bookingId;
+    private Integer agent_id;
+    private Integer booking_id;
 
     public BookingAgentID() {
+
     }
 
-    public BookingAgentID(Integer agentId, Integer bookingId) {
-        this.agentId = agentId;
-        this.bookingId = bookingId;
+    public BookingAgentID(Integer agent_id, Integer booking_id) {
+        this.agent_id = agent_id;
+        this.booking_id = booking_id;
     }
 
-    public Integer getAgentId() {
-        return agentId;
+    public Integer getAgent_id() {
+        return agent_id;
     }
 
-    public void setAgentId(Integer agentId) {
-        this.agentId = agentId;
+    public void setAgent_id(Integer agent_id) {
+        this.agent_id = agent_id;
     }
 
-    public Integer getBookingId() {
-        return bookingId;
+    public Integer getBooking_id() {
+        return booking_id;
     }
 
-    public void setBookingId(Integer bookingId) {
-        this.bookingId = bookingId;
+    public void setBooking_id(Integer booking_id) {
+        this.booking_id = booking_id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookingAgentID that = (BookingAgentID) o;
-        return agentId.equals(that.agentId) && bookingId.equals(that.bookingId);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(agentId, bookingId);
-    }
 }
