@@ -1,6 +1,9 @@
 package com.ss.utopia.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity(name = "flight_bookings")
@@ -13,6 +16,7 @@ public class FlightBooking {
     @ManyToOne
     Flight flight;
 
+    @JsonBackReference
     @MapsId("bookingId")
     @ManyToOne
     Booking booking;

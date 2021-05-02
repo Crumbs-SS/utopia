@@ -2,34 +2,47 @@ package com.ss.utopia.entity;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class BookingUserID implements Serializable {
-    private Integer user_id;
-    private Integer booking_id;
+    private Integer userId;
+    private Integer bookingId;
 
-    public Integer getUser_id() {
-        return user_id;
+    public BookingUserID() {
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public BookingUserID(Integer userId, Integer bookingId) {
+        this.userId = userId;
+        this.bookingId = bookingId;
     }
 
-    public Integer getBooking_id() {
-        return booking_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setBooking_id(Integer booking_id) {
-        this.booking_id = booking_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public BookingUserID(Integer user_id, Integer booking_id) {
-        this.user_id = user_id;
-        this.booking_id = booking_id;
+    public Integer getBookingId() {
+        return bookingId;
     }
 
-    public BookingUserID(){
+    public void setBookingId(Integer bookingId) {
+        this.bookingId = bookingId;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookingUserID that = (BookingUserID) o;
+        return userId.equals(that.userId) && bookingId.equals(that.bookingId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, bookingId);
     }
 }

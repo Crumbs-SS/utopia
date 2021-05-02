@@ -11,11 +11,11 @@ public class BookingUser {
     @EmbeddedId
     private BookingUserID id;
 
-    @MapsId("user_id")
+    @MapsId("userId")
     @ManyToOne
     private User user;
 
-    @MapsId("booking_id")
+    @MapsId("bookingId")
     @ManyToOne
     private Booking booking;
 

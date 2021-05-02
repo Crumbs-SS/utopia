@@ -9,7 +9,6 @@ public class UserRole {
 
     @Id
     private Integer id;
-
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRole")

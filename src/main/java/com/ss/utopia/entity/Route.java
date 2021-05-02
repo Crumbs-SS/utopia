@@ -9,6 +9,7 @@ import java.util.List;
 public class Route {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
