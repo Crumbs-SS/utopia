@@ -1,5 +1,8 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity(name = "booking_guest")
@@ -12,6 +15,7 @@ public class BookingGuest {
     @MapsId
     @OneToOne
     @JoinColumn(name = "booking_id")
+    @JsonBackReference
     private Booking booking;
 
     private String contactEmail;

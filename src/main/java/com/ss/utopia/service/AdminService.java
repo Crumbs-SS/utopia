@@ -420,7 +420,7 @@ public class AdminService {
             Booking oldB = bookingRepository.findById(bdto.getId()).get();
             Booking booking = new Booking();
             booking.setId(oldB.getId());
-            booking.setIsActive(oldB.getIsActive());
+            booking.setActive(oldB.getActive());
             if (null != bdto.getConfirmationCode()) {
                 booking.setConfirmationCode(bdto.getConfirmationCode());
             } else {
@@ -493,11 +493,11 @@ public class AdminService {
     public Booking cancelBooking(int id) {
         try {
             Booking b = bookingRepository.findById(id).get();
-            if (!b.getIsActive()) {
+            if (!b.getActive()) {
                 return b;
             }
             BookingPayment bp = bookingPaymentRepository.findById(id).get();
-            b.setIsActive(false);
+            b.setActive(false);
             bp.setRefunded(true);
             b = bookingRepository.save(b);
             bookingPaymentRepository.save(bp);
@@ -512,11 +512,11 @@ public class AdminService {
     public Booking uncancelBooking(int id) {
         try {
             Booking b = bookingRepository.findById(id).get();
-            if (b.getIsActive()) {
+            if (b.getActive()) {
                 return b;
             }
             BookingPayment bp = bookingPaymentRepository.findById(id).get();
-            b.setIsActive(true);
+            b.setActive(true);
             bp.setRefunded(false);
             b = bookingRepository.save(b);
             bookingPaymentRepository.save(bp);

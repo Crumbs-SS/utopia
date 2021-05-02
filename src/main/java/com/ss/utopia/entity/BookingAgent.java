@@ -1,5 +1,8 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -11,6 +14,7 @@ public class BookingAgent {
     @EmbeddedId
     private BookingAgentID id;
 
+    @JsonBackReference
     @MapsId("bookingId")
     @ManyToOne
     private Booking booking;
