@@ -53,28 +53,28 @@ public class AdminController {
         return seats != null ? new ResponseEntity<>(seats, HttpStatus.OK)
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
-/*
+
     @PostMapping("/seats/{flightId}")
     public ResponseEntity<String> addSeats(@PathVariable int flightId, @Validated @RequestBody Seats seats) {
         Seats s = as.addSeats(flightId, seats);
         return s != null ? new ResponseEntity<>("Seats added.", HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be added.", HttpStatus.CONFLICT);
     }
-*/
+
     @PutMapping("/seats/{id}")
     public ResponseEntity<String> updateSeats(@PathVariable int id, @Validated @RequestBody Seats seat) {
         Seats s = as.updateSeats(id, seat);
         return s != null ? new ResponseEntity<>("Seats updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be updated.", HttpStatus.CONFLICT);
     }
-/*
+
     @DeleteMapping("/seats/{id}")
     public ResponseEntity<String> deleteSeats(@PathVariable int id) {
         String msg = as.deleteSeats(id);
         return msg != null ? new ResponseEntity<>(msg, HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be deleted.", HttpStatus.CONFLICT);
     }
-*/
+
 
     // Bookings ----------------------------------------------------
     @GetMapping("/bookings")

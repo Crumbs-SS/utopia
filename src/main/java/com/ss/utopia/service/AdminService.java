@@ -159,7 +159,7 @@ public class AdminService {
             return null;
         }
     }
-/*
+
     public Seats addSeats(int flightId, Seats seat) {
         try {
             Flight f = flightRepository.findById(flightId).orElseThrow();
@@ -171,7 +171,7 @@ public class AdminService {
             return null;
         }
     }
-*/
+
     public User addEmployee(User user) {
         try {
             user.setUserRole(new UserRole(EMPLOYEE, "ph"));
@@ -268,7 +268,7 @@ public class AdminService {
             return null;
         }
     }
-/*
+
     public String deleteSeats(Integer id) {
         try {
             seatRepository.deleteById(id);
@@ -279,7 +279,7 @@ public class AdminService {
             return null;
         }
     }
-*/
+
     public String deleteEmployee(Integer id) {
         try {
             userRepository.deleteEmployee(id);
@@ -335,6 +335,9 @@ public class AdminService {
             // just to check if the string was a valid datetime
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+
+            Seats seats = seatRepository.findById(id).orElseThrow();
 
             Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
             flight.setAirplane(airplane);
