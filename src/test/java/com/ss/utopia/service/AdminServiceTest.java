@@ -136,6 +136,11 @@ class AdminServiceTest {
 
         Mockito.when(flightRepository.findById(0))
                 .thenReturn(flightOptional);
+        Mockito.when(flightRepository.findById(0))
+                .thenReturn(flightOptional);
+        Mockito.when(airplaneRepository.findById(null)).thenReturn(Optional.of(new Airplane()));
+        Mockito.when(airportRepository.findById(null)).thenReturn(Optional.of(new Airport()));
+        Mockito.when(routeRepository.findById(null)).thenReturn(Optional.of(new Route()));
         Mockito.when(flightRepository.save(flight))
                 .thenReturn(flight);
 
