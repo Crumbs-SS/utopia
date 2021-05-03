@@ -3,6 +3,9 @@ package com.ss.utopia.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +17,16 @@ public class Flight {
     private Integer id;
 
     @ManyToOne
+    @NotNull
     private Route route;
 
     @ManyToOne
+    @NotNull
     private Airplane airplane;
 
+    // STILL NOT ACCOUNTING FOR BAD STRINGS
     @Column(name = "departure_time")
+    @NotNull
     private String departTime;
 
     @JsonIgnore
@@ -28,9 +35,14 @@ public class Flight {
 
     @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @NotNull
     private Seats seats;
 
+    @NotNull
+    @Min(value = 0)
     private Integer reservedSeats;
+    @NotNull
+    @Min(value = 0)
     private Float seatPrice;
 
     public Flight(){

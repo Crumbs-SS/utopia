@@ -148,6 +148,7 @@ public class AdminService {
             flight.setRoute(route);
             return flightRepository.save(flight);
         } catch (Exception e) {
+            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         }
@@ -159,6 +160,7 @@ public class AdminService {
             seat.setFlight(f);
             return seatRepository.save(seat);
         } catch (Exception e) {
+            e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         }

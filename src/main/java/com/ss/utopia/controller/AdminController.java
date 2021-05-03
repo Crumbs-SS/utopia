@@ -6,6 +6,7 @@ import com.ss.utopia.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class AdminController {
     }
 
     @PostMapping("/flights")
-    public ResponseEntity<String> addFlight(@RequestBody Flight f) {
+    public ResponseEntity<String> addFlight(@Validated @RequestBody Flight f) {
         Flight flight = as.addFlight(f);
         return flight != null ? new ResponseEntity<>("Flight added.", HttpStatus.OK)
                 : new ResponseEntity<>("Flight could not be added.", HttpStatus.CONFLICT);
