@@ -134,12 +134,15 @@ class AdminServiceTest {
         Optional<Flight> flightOptional = MockUtil.getFlightOptional();
         Flight flight = flightOptional.get();
 
-        Mockito.when(flightRepository.findById(0))
+        Mockito.when(flightRepository.findById(1))
                 .thenReturn(flightOptional);
+        Mockito.when(airplaneRepository.findById(null)).thenReturn(Optional.of(new Airplane()));
+        Mockito.when(airportRepository.findById(null)).thenReturn(Optional.of(new Airport()));
+        Mockito.when(routeRepository.findById(null)).thenReturn(Optional.of(new Route()));
         Mockito.when(flightRepository.save(flight))
                 .thenReturn(flight);
 
-        assertEquals(flight, adminService.updateFlight(0, flight));
+        assertEquals(flight, adminService.updateFlight(1, flight));
     }
 
     @Test
@@ -238,4 +241,5 @@ class AdminServiceTest {
 
         assertNotEquals(cancelledBooking.getActive(), adminService.uncancelBooking(1).getActive());
     }
+
 }
