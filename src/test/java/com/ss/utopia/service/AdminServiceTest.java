@@ -1,15 +1,8 @@
 package com.ss.utopia.service;
 
-import com.ss.utopia.entity.Airport;
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.Passenger;
-import com.ss.utopia.entity.Seats;
+import com.ss.utopia.entity.*;
 import com.ss.utopia.repo.*;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -141,12 +135,12 @@ class AdminServiceTest {
         Optional<Flight> flightOptional = MockUtil.getFlightOptional();
         Flight flight = flightOptional.get();
 
-        Mockito.when(flightRepository.findById(0))
+        Mockito.when(flightRepository.findById(flight.getId()))
                 .thenReturn(flightOptional);
         Mockito.when(flightRepository.save(flight))
                 .thenReturn(flight);
 
-        assertEquals(flight, adminService.updateFlight(0, flight));
+        assertEquals(flight, adminService.updateFlight(flight.getId(), flight));
     }
 
     @Test
@@ -154,12 +148,12 @@ class AdminServiceTest {
         Optional<Seats> seatsOptional = MockUtil.getSeatOptional();
         Seats seats = seatsOptional.get();
 
-        Mockito.when(seatRepository.findById(0))
+        Mockito.when(seatRepository.findById(seats.getId()))
                 .thenReturn(seatsOptional);
         Mockito.when(seatRepository.save(seats))
                 .thenReturn(seats);
 
-        assertEquals(seats, adminService.updateSeats(0, seats));
+        assertEquals(seats, adminService.updateSeats(seats.getId(), seats));
     }
 
     @Test
@@ -177,14 +171,38 @@ class AdminServiceTest {
 
     @Test
     void updateTraveler() {
+        Optional<User> travelerOptional = MockUtil.getUserOptional();
+        User traveler = travelerOptional.get();
+        Mockito.when(userRepository.findById(traveler.getId()))
+                .thenReturn(travelerOptional);
+        Mockito.when(userRepository.save(traveler))
+                .thenReturn(traveler);
+
+        assertEquals(traveler, adminService.updateTraveler(traveler.getId(), traveler));
     }
 
     @Test
     void updateEmployee() {
+        Optional<User> employeeOptional = MockUtil.getUserOptional();
+        User employee = employeeOptional.get();
+        Mockito.when(userRepository.findById(employee.getId()))
+                .thenReturn(employeeOptional);
+        Mockito.when(userRepository.save(employee))
+                .thenReturn(employee);
+
+        assertEquals(employee, adminService.updateEmployee(employee.getId(), employee));
     }
 
     @Test
     void updatePassenger() {
+        Optional<Passenger> passengerOptional = MockUtil.getPassengerOptional();
+        Passenger passenger = passengerOptional.get();
+        Mockito.when(passengerRepository.findById(passenger.getId()))
+                .thenReturn(passengerOptional);
+        Mockito.when(passengerRepository.save(passenger))
+                .thenReturn(passenger);
+
+        assertEquals(passenger, adminService.updatePassenger(passenger.getId(), passenger));
     }
 
     @Test

@@ -92,7 +92,6 @@ public class MockUtil {
                 "123456"
         );
     }
-
     public static Airport getAirport(){
         return new Airport("TES", "TEST");
     }
@@ -100,6 +99,7 @@ public class MockUtil {
     public static Optional<Airport> getAirportOptional(){
         return Optional.of(getAirport());
     }
+
 
     public static List<Booking> getBookings(){
         List<Booking> bookings = new ArrayList<>();
@@ -167,6 +167,5 @@ public class MockUtil {
     private static FlightBookingID getFlightBookingID(){
         return new FlightBookingID(getFlight().getId(), getBooking().getId());
     }
-
 
 }
