@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity(name = "flight_bookings")
 public class FlightBooking {
 
+    @JsonIgnore
     @EmbeddedId
     private FlightBookingID id;
 
