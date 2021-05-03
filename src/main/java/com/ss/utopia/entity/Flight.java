@@ -37,12 +37,14 @@ public class Flight {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
+    /*
     @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JsonManagedReference
     @NotNull
     @Valid
     private Seats seats;
+*/
 
     @NotNull
     @Min(value = 0)
@@ -103,14 +105,6 @@ public class Flight {
 
     public void setFlightBookings(List<FlightBooking> flightBookings) {
         this.flightBookings = flightBookings;
-    }
-
-    public Seats getSeats() {
-        return seats;
-    }
-
-    public void setSeats(Seats seats) {
-        this.seats = seats;
     }
 
     public Integer getReservedSeats() {
