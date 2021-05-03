@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Booking {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @Valid
     private List<Passenger> passengers = new ArrayList<>();
 
     @JsonManagedReference

@@ -4,6 +4,7 @@ import com.ss.utopia.entity.Passenger;
 
 import com.ss.utopia.entity.BookingGuest;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public class BookingDTO {
@@ -12,6 +13,8 @@ public class BookingDTO {
     private Integer userId;
     private BookingGuest bookingGuest;
     private String stripeId;
+
+    @Valid
     private List<Passenger> passengers;
     private String confirmationCode;
 
