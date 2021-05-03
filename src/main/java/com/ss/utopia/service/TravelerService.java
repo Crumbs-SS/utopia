@@ -65,8 +65,6 @@ public class TravelerService {
             String confirmationCode = "CONFIRMATION-" + (bookingRepository.findAll().size() + 1);
             booking = bookingRepository.saveAndFlush(new Booking(true, confirmationCode));
 
-            System.out.println(booking);
-
             Flight flight = flightRepository.findById(bookingDTO.getFlightId()).orElseThrow();
             User user = userRepository.findById(bookingDTO.getUserId()).orElseThrow();
 
