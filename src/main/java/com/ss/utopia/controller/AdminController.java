@@ -85,6 +85,7 @@ public class AdminController {
     }
 
     @PostMapping("/bookings")
+
     public ResponseEntity<String> addBooking(@RequestBody BookingDTO bdto) {
         Booking b = as.addBooking(bdto);
         return b != null ? new ResponseEntity<>("Booking added.", HttpStatus.OK)

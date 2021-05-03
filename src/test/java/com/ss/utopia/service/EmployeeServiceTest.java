@@ -17,8 +17,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -29,32 +27,46 @@ public class EmployeeServiceTest {
     @MockBean private FlightRepository flightRepository;
     @MockBean private SeatRepository seatRepository;
 
-    @Test
-    public void getFlightByIdTest(){
-        Mockito.when(flightRepository.findById(0)).thenReturn(Optional.of(MockUtil.getFlight()));
-        assertNotEquals(null, employeeService.getFlight(0));
-    }
+  @Test
+  void getFlightByIDTest() {
+      Mockito.when(flightRepository.findById(0))
+              .thenReturn(Optional.of(MockUtil.getFlight()));
+
+      assertNotEquals(null, employeeService.getFlight(0));
+  }
+  @Test
+  void getSeats() {
+      Mockito.when(seatRepository.findAll())
+              .thenReturn(MockUtil.getMockSeats());
+
+      assertEquals(MockUtil.getMockSeats().size(), employeeService.getSeats().size());
+  }
+
+  @Test
+  void updateFlight() {
+      Optional<Flight> flightOptional = MockUtil.getFlightOptional();
+      Flight flight = flightOptional.get();
+
+      Mockito.when(flightRepository.findById(0))
+              .thenReturn(flightOptional);
+      Mockito.when(flightRepository.save(flight))
+              .thenReturn(flight);
+
+      assertEquals(flight, employeeService.updateFlight(0, flight));
+  }
 
     @Test
-    public void getSeatsTest() {
-        Mockito.when(seatRepository.findAll()).thenReturn(MockUtil.getMockSeats());
-        assertEquals(1, employeeService.getSeats().getBody().size());
+    void updateSeats() {
+        Optional<Seats> seatsOptional = MockUtil.getSeatOptional();
+        Seats seats = seatsOptional.get();
+
+        Mockito.when(seatRepository.findById(0))
+                .thenReturn(seatsOptional);
+        Mockito.when(seatRepository.save(seats))
+                .thenReturn(seats);
+
+        assertEquals(seats, employeeService.updateSeats(0, seats));
     }
 
-    @Test
-    public void updateFlightTest() {
-        Flight flight = new Flight(1);
-        Mockito.when(flightRepository.save(flight)).thenReturn(flight);
-        assertEquals(null, employeeService.updateFlight(flight));
-        assertEquals(flight, employeeService.updateFlight(flight).getBody());
-        verify(flightRepository).save(any(Flight.class));
-    }
-
-    @Test
-    public void updateSeatsTest(){
-        final Seats seat = new Seats();
-        Mockito.when(seatRepository.save(seat)).thenReturn(seat);
-        assertNotEquals(null, employeeService.updateSeats(seat));
-    }
 
 }

@@ -384,9 +384,17 @@ public class AdminService {
     }
 
     public User updateTraveler(int id, User t) {
+        return getUser(id, t, TRAVELER);
+    }
+
+    public User updateEmployee(int id, User e) {
+        return getUser(id, e, EMPLOYEE);
+    }
+
+    private User getUser(int id, User t, int traveler) {
         try {
             t.setId(id);
-            t.setUserRole(new UserRole(TRAVELER, "ph"));
+            t.setUserRole(new UserRole(traveler, "ph"));
             User oldT = userRepository.findById(t.getId()).get();
             if (t.getGivenName() == null) { t.setGivenName(oldT.getGivenName()); }
             if (t.getFamilyName() == null) {  t.setFamilyName(oldT.getFamilyName()); }
@@ -401,26 +409,6 @@ public class AdminService {
             return null;
         }
     }
-
-    public User updateEmployee(int id, User e) {
-        try {
-            e.setId(id);
-            e.setUserRole(new UserRole(EMPLOYEE, "ph"));
-            User oldE = userRepository.findById(e.getId()).get();
-            if (e.getGivenName() == null) { e.setGivenName(oldE.getGivenName()); }
-            if (e.getFamilyName() == null) { e.setFamilyName(oldE.getFamilyName()); }
-            if (e.getUsername() == null) { e.setUsername(oldE.getUsername()); }
-            if (e.getEmail() == null) { e.setEmail(oldE.getEmail()); }
-            if (e.getPassword() == null) { e.setPassword(oldE.getPassword()); }
-            if (e.getPhone() == null) { e.setPhone(oldE.getPhone()); }
-            return userRepository.save(e);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return null;
-        }
-    }
-
 
     public Booking updateBooking(int id, BookingDTO bdto) {
         // let them change associated flight
