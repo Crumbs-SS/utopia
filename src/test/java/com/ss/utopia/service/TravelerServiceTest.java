@@ -48,25 +48,6 @@ class TravelerServiceTest {
                 travelerService.login(user).getEmail());
     }
 
-//    @Test
-//    void addBooking() {
-//        Booking booking = MockUtil.getBooking();
-//        BookingPayment bookingPayment = MockUtil.getBookingPayment();
-//        BookingUser bookingUser = MockUtil.getBookingUser();
-//        FlightBooking flightBooking = MockUtil.getFlightBooking();
-//
-//        Mockito.when(bookingRepository.findAll()).thenReturn(MockUtil.getBookings());
-//        Mockito.when(bookingRepository.saveAndFlush(booking)).thenReturn(booking);
-//        Mockito.when(flightRepository.findById(null)).thenReturn(MockUtil.getFlightOptional());
-//        Mockito.when(userRepository.findById(null)).thenReturn(MockUtil.getUserOptional());
-//        Mockito.when(bookingPaymentRepository.save(bookingPayment)).thenReturn(bookingPayment);
-//        Mockito.when(flightBookingRepository.save(flightBooking)).thenReturn(flightBooking);
-//        Mockito.when(bookingUserRepository.save(bookingUser)).thenReturn(bookingUser);
-//
-//
-//        assertEquals(booking.getConfirmationCode(), travelerService.addBooking(MockUtil.getBookingDTO()));
-//    }
-
     @Test
     void cancelBooking() {
         Booking booking = MockUtil.getBooking();
@@ -88,4 +69,5 @@ class TravelerServiceTest {
 
         assertEquals(3, travelerService.getAllBookings().size());
     }
+
 }
