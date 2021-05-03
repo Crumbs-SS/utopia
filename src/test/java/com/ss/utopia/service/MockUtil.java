@@ -137,7 +137,7 @@ public class MockUtil {
     }
 
     public static Flight getFlight(){
-        Flight flight = new Flight("time", 20, 20.53F);
+        Flight flight = new Flight("2020-01-10 10:00:00", 20, 20.53F);
         flight.setRoute(new Route(new Airport(), new Airport()));
         flight.setAirplane(new Airplane());
         return flight;
