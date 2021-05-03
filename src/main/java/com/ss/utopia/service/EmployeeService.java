@@ -1,14 +1,14 @@
 package com.ss.utopia.service;
 
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.Seats;
-import com.ss.utopia.repo.FlightRepository;
-import com.ss.utopia.repo.SeatRepository;
+import com.ss.utopia.entity.*;
+import com.ss.utopia.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -17,6 +17,9 @@ public class EmployeeService {
 
     @Autowired FlightRepository flightRepository;
     @Autowired SeatRepository seatRepository;
+    @Autowired AirplaneRepository airplaneRepository;
+    @Autowired AirportRepository airportRepository;
+    @Autowired RouteRepository routeRepository;
 
     public Flight getFlight(Integer id){
         try {
@@ -35,15 +38,27 @@ public class EmployeeService {
             return null;
         }
     }
+    //update methods
     public Flight updateFlight(int id, Flight flight) {
         try {
             flight.setId(id);
             Flight temp = flightRepository.findById(flight.getId()).get();
-            if (flight.getRoute() == null) flight.setRoute(temp.getRoute());
-            if (flight.getAirplane() == null) flight.setAirplane(temp.getAirplane());
-            if (flight.getDepartTime() == null) flight.setDepartTime(temp.getDepartTime());
-            if (flight.getReservedSeats() == null) flight.setReservedSeats(temp.getReservedSeats());
-            if (flight.getSeatPrice() == null) flight.setSeatPrice(temp.getSeatPrice());
+
+            // just to check if the string was a valid datetime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+            Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
+            flight.setAirplane(airplane);
+            Airport ori = airportRepository
+                    .findById(flight.getRoute().getOriAirport().getAirportCode()).orElseThrow();
+            Airport des = airportRepository
+                    .findById(flight.getRoute().getDesAirport().getAirportCode()).orElseThrow();
+            Route route = routeRepository.findByOriAirportAndDesAirport(ori, des);
+            if (null == route) {
+                route = routeRepository.save(new Route(ori, des));
+            }
+            flight.setRoute(route);
             return flightRepository.save(flight);
         } catch (Exception e) {
             e.printStackTrace();
