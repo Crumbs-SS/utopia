@@ -39,6 +39,7 @@ class BookingAgentRepositoryTest {
 
         bookingRepository.save(booking);
         userRepository.save(user);
+
         bookingAgentRepository.save(bookingAgent);
     }
 

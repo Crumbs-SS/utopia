@@ -37,6 +37,11 @@ public class Airplane {
         return id;
     }
 
+    public Airplane(int i, AirplaneType airplaneType) {
+        this.id = i;
+        this.airplaneType = airplaneType;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

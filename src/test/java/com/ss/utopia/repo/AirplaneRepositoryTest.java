@@ -21,7 +21,7 @@ class AirplaneRepositoryTest {
     void findAirplanesByMaxCapacity() {
         Integer maxCapacity = 999999;
         AirplaneType airplaneType = airplaneTypeRepository.save(new AirplaneType(maxCapacity));
-        airplaneRepository.save(new Airplane(airplaneType));
+        airplaneRepository.save(new Airplane(0, airplaneType));
 
         Integer amountOfAirplanes = airplaneRepository.findAirplanesByMaxCapacity(maxCapacity).size();
         airplaneTypeRepository.delete(airplaneType);
