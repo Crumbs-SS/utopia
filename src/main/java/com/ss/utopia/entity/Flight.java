@@ -37,17 +37,18 @@ public class Flight {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
-//    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
-//    @PrimaryKeyJoinColumn
-//    @JsonManagedReference
-//    @NotNull
-//    @Valid
-//    private Seats seats;
+    /*
+    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JsonManagedReference
+    @NotNull
+    @Valid
+    private Seats seats;
+*/
 
     @NotNull
     @Min(value = 0)
     private Integer reservedSeats;
-
     @NotNull
     @Min(value = 0)
     private Float seatPrice;
