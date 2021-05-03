@@ -40,7 +40,7 @@ public class EmployeeService {
     }
     //update methods
     public Flight updateFlight(int id, Flight flight) {
-        try {
+        try{
             flight.setId(id);
             Flight temp = flightRepository.findById(flight.getId()).get();
 
