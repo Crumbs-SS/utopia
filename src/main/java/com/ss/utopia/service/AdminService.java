@@ -380,10 +380,6 @@ public class AdminService {
         return getUser(id, t, TRAVELER);
     }
 
-    public User updateEmployee(int id, User e) {
-        return getUser(id, e, EMPLOYEE);
-    }
-
     private User getUser(int id, User t, int traveler) {
         try {
             t.setId(id);
@@ -402,6 +398,11 @@ public class AdminService {
             return null;
         }
     }
+
+    public User updateEmployee(int id, User e) {
+        return getUser(id, e, EMPLOYEE);
+    }
+
 
     public Booking updateBooking(int id, BookingDTO bdto) {
         // let them change associated flight
