@@ -137,10 +137,7 @@ public class MockUtil {
     }
 
     public static Flight getFlight(){
-        Flight flight = new Flight("time", 20, 20.53F);
-        flight.setRoute(new Route(new Airport(), new Airport()));
-        flight.setAirplane(new Airplane());
-        return flight;
+        return new Flight("time", 20, 20.53F);
     }
     public static Flight getFlight2(){return new Flight(0);}
     public static FlightBooking getFlightBooking(){
