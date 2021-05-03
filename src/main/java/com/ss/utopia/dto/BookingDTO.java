@@ -1,5 +1,6 @@
 package com.ss.utopia.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ss.utopia.entity.Passenger;
 
 import com.ss.utopia.entity.BookingGuest;

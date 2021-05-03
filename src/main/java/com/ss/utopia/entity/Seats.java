@@ -1,6 +1,10 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,10 +19,17 @@ public class Seats {
     @MapsId
     @OneToOne
     @JoinColumn(name = "flight_id")
+    @JsonBackReference
     private Flight flight;
 
+    @NotNull
+    @Min(value = 0)
     private Integer first;
+    @NotNull
+    @Min(value = 0)
     private Integer business;
+    @NotNull
+    @Min(value = 0)
     private Integer economy;
 
    public Seats(Integer first, Integer business, Integer economy){

@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
@@ -17,6 +18,7 @@ public class AdminService {
 
     @Autowired AirportRepository airportRepository;
     @Autowired FlightRepository flightRepository;
+    @Autowired AirplaneRepository airplaneRepository;
     @Autowired RouteRepository routeRepository;
     @Autowired SeatRepository seatRepository;
     @Autowired UserRepository userRepository;
@@ -90,10 +92,6 @@ public class AdminService {
     public List<Passenger> getPassengers() {
         try {
             return passengerRepository.findAll();
-            /*for (Passenger p : passengers) {
-                Booking b = bdao.getBookingById(p.getBooking().getId());
-                p.setBooking(b);
-            }*/
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -114,19 +112,16 @@ public class AdminService {
             Booking b = new Booking();
             b.setId(id);
             return passengerRepository.getPassengersByBooking(b);
-            /*for (Passenger p : passengers) {
-                p.setBooking(b);
-            }*/
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         }
     }
 
-
     //Add Methods
     public Airport addAirport(Airport airport) {
         try {
+            if (null == airport.getCityName()) { return null; }
             return airportRepository.save(airport);
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,6 +132,12 @@ public class AdminService {
 
     public Flight addFlight(Flight flight) {
         try {
+            // just to check if the string was a valid datetime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+            Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
+            flight.setAirplane(airplane);
             Airport ori = airportRepository
                     .findById(flight.getRoute().getOriAirport().getAirportCode()).orElseThrow();
             Airport des = airportRepository
@@ -153,7 +154,7 @@ public class AdminService {
             return null;
         }
     }
-
+/*
     public Seats addSeats(int flightId, Seats seat) {
         try {
             Flight f = flightRepository.findById(flightId).orElseThrow();
@@ -165,7 +166,7 @@ public class AdminService {
             return null;
         }
     }
-
+*/
     public User addEmployee(User user) {
         try {
             user.setUserRole(new UserRole(EMPLOYEE, "ph"));
@@ -225,7 +226,8 @@ public class AdminService {
 
     public Passenger addPassenger(int id, Passenger p) {
         try {
-            p.getBooking().setId(id);
+            Booking b = bookingRepository.findById(id).orElseThrow();
+            p.setBooking(b);
             return passengerRepository.save(p);
         } catch (Exception e) {
             e.printStackTrace();
@@ -346,10 +348,11 @@ public class AdminService {
         }
     }
 
-    public Seats updateSeats(Seats seat) {
+    public Seats updateSeats(int id, Seats seat) {
         try {
+            seat.setId(id);
             Seats temp = seatRepository.findById(seat.getId()).get();
-            if (seat.getFlight() == null) seat.setFlight(flightRepository.findById(seat.getId()).get());
+            seat.setFlight(temp.getFlight());
             if (seat.getFirst() == null) seat.setFirst(temp.getFirst());
             if (seat.getBusiness() == null) seat.setBusiness(temp.getBusiness());
             if (seat.getEconomy() == null) seat.setEconomy(temp.getEconomy());

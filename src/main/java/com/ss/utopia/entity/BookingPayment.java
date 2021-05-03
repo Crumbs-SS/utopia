@@ -35,6 +35,14 @@ public class BookingPayment {
         this.refunded = b;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Booking getBooking() {
         return booking;
     }

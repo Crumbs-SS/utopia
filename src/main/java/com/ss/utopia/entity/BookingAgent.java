@@ -33,6 +33,14 @@ public class BookingAgent {
         this.id = new BookingAgentID(agent.getId(), booking.getId());
     }
 
+    public BookingAgentID getId() {
+        return id;
+    }
+
+    public void setId(BookingAgentID id) {
+        this.id = id;
+    }
+
     public Booking getBooking() {
         return booking;
     }

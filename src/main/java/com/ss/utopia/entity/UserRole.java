@@ -1,5 +1,8 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,7 @@ public class UserRole {
     private Integer id;
     private String name;
 
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRole")
     List<User> users = new ArrayList<>();
 
@@ -20,6 +24,14 @@ public class UserRole {
     }
 
     public UserRole() {
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Integer getId() {

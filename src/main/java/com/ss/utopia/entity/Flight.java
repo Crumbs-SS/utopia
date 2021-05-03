@@ -1,8 +1,10 @@
 package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -18,10 +20,12 @@ public class Flight {
 
     @ManyToOne
     @NotNull
+    @Valid
     private Route route;
 
     @ManyToOne
     @NotNull
+    @Valid
     private Airplane airplane;
 
     // STILL NOT ACCOUNTING FOR BAD STRINGS
@@ -35,7 +39,9 @@ public class Flight {
 
     @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JsonManagedReference
     @NotNull
+    @Valid
     private Seats seats;
 
     @NotNull
@@ -91,6 +97,22 @@ public class Flight {
         this.departTime = departTime;
     }
 
+    public List<FlightBooking> getFlightBookings() {
+        return flightBookings;
+    }
+
+    public void setFlightBookings(List<FlightBooking> flightBookings) {
+        this.flightBookings = flightBookings;
+    }
+
+    public Seats getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Seats seats) {
+        this.seats = seats;
+    }
+
     public Integer getReservedSeats() {
         return reservedSeats;
     }
@@ -106,17 +128,4 @@ public class Flight {
     public void setSeatPrice(Float seatPrice) {
         this.seatPrice = seatPrice;
     }
-
-    public List<FlightBooking> getFlightBookings() {
-        return flightBookings;
-    }
-
-    public void setFlightBookings(List<FlightBooking> flightBookings) {
-        this.flightBookings = flightBookings;
-    }
-
-    public void addFlightBooking(FlightBooking flightBooking){
-        flightBookings.add(flightBooking);
-    }
-
 }

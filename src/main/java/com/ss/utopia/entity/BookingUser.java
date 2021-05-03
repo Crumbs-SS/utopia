@@ -37,6 +37,14 @@ public class BookingUser {
         this.user = user;
     }
 
+    public BookingUserID getId() {
+        return id;
+    }
+
+    public void setId(BookingUserID id) {
+        this.id = id;
+    }
+
     public User getUser() {
         return user;
     }
