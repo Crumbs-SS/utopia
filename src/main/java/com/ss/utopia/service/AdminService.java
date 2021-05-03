@@ -336,9 +336,6 @@ public class AdminService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
 
-
-            Seats seats = seatRepository.findById(id).orElseThrow();
-
             Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
             flight.setAirplane(airplane);
             Airport ori = airportRepository
