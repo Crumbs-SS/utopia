@@ -1,8 +1,13 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +20,41 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonBackReference
     private UserRole userRole;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<BookingUser> bookingUsers = new ArrayList<>();
 
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String givenName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String familyName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String username;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String email;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String password;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String phone;
 
     public User(){

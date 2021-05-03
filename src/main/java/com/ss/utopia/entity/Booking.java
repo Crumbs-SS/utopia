@@ -1,5 +1,6 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -19,19 +20,24 @@ public class Booking {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "booking")
     private List<FlightBooking> flightBookings = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Passenger> passengers = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingUser> bookingUsers = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingAgent> bookingAgents = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private BookingPayment bookingPayment;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private BookingGuest bookingGuest;
@@ -55,12 +61,12 @@ public class Booking {
         this.id = id;
     }
 
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public String getConfirmationCode() {
@@ -71,14 +77,6 @@ public class Booking {
         this.confirmationCode = confirmationCode;
     }
 
-    public List<Passenger> getPassengers() {
-        return passengers;
-    }
-
-    public void addPassenger(Passenger passenger) {
-        this.passengers.add(passenger);
-    }
-
     public List<FlightBooking> getFlightBookings() {
         return flightBookings;
     }
@@ -87,7 +85,43 @@ public class Booking {
         this.flightBookings = flightBookings;
     }
 
-    public void addFlightBooking(FlightBooking flightBooking){
-        this.flightBookings.add(flightBooking);
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<Passenger> passengers) {
+        this.passengers = passengers;
+    }
+
+    public List<BookingUser> getBookingUsers() {
+        return bookingUsers;
+    }
+
+    public void setBookingUsers(List<BookingUser> bookingUsers) {
+        this.bookingUsers = bookingUsers;
+    }
+
+    public List<BookingAgent> getBookingAgents() {
+        return bookingAgents;
+    }
+
+    public void setBookingAgents(List<BookingAgent> bookingAgents) {
+        this.bookingAgents = bookingAgents;
+    }
+
+    public BookingPayment getBookingPayment() {
+        return bookingPayment;
+    }
+
+    public void setBookingPayment(BookingPayment bookingPayment) {
+        this.bookingPayment = bookingPayment;
+    }
+
+    public BookingGuest getBookingGuest() {
+        return bookingGuest;
+    }
+
+    public void setBookingGuest(BookingGuest bookingGuest) {
+        this.bookingGuest = bookingGuest;
     }
 }

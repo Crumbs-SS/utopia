@@ -6,6 +6,7 @@ import com.ss.utopia.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,14 +26,14 @@ public class AdminController {
     }
 
     @PostMapping("/flights")
-    public ResponseEntity<String> addFlight(@RequestBody Flight f) {
+    public ResponseEntity<String> addFlight(@Validated @RequestBody Flight f) {
         Flight flight = as.addFlight(f);
         return flight != null ? new ResponseEntity<>("Flight added.", HttpStatus.OK)
                 : new ResponseEntity<>("Flight could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/flights/{flightId}")
-    public ResponseEntity<String> updateFlight(@PathVariable int flightId, @RequestBody Flight f) {
+    public ResponseEntity<String> updateFlight(@PathVariable int flightId, @Validated @RequestBody Flight f) {
         Flight flight = as.updateFlight(flightId, f);
         return flight != null ? new ResponseEntity<>("Flight updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Flight could not be updated.", HttpStatus.CONFLICT);
@@ -52,28 +53,28 @@ public class AdminController {
         return seats != null ? new ResponseEntity<>(seats, HttpStatus.OK)
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
-
+/*
     @PostMapping("/seats/{flightId}")
-    public ResponseEntity<String> addSeats(@PathVariable int flightId, @RequestBody Seats seats) {
+    public ResponseEntity<String> addSeats(@PathVariable int flightId, @Validated @RequestBody Seats seats) {
         Seats s = as.addSeats(flightId, seats);
         return s != null ? new ResponseEntity<>("Seats added.", HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be added.", HttpStatus.CONFLICT);
     }
-
+*/
     @PutMapping("/seats/{id}")
-    public ResponseEntity<String> updateSeats(@RequestBody Seats seat) {
-        Seats s = as.updateSeats(seat);
+    public ResponseEntity<String> updateSeats(@PathVariable int id, @Validated @RequestBody Seats seat) {
+        Seats s = as.updateSeats(id, seat);
         return s != null ? new ResponseEntity<>("Seats updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be updated.", HttpStatus.CONFLICT);
     }
-
+/*
     @DeleteMapping("/seats/{id}")
     public ResponseEntity<String> deleteSeats(@PathVariable int id) {
         String msg = as.deleteSeats(id);
         return msg != null ? new ResponseEntity<>(msg, HttpStatus.OK)
                 : new ResponseEntity<>("Seats could not be deleted.", HttpStatus.CONFLICT);
     }
-
+*/
 
     // Bookings ----------------------------------------------------
     @GetMapping("/bookings")
@@ -91,7 +92,7 @@ public class AdminController {
     }
 
     @PutMapping("/bookings/{id}")
-    public ResponseEntity<String> updateBooking(@PathVariable int id, @RequestBody BookingDTO bdto) {
+    public ResponseEntity<String> updateBooking(@PathVariable int id, @Validated @RequestBody BookingDTO bdto) {
         Booking b = as.updateBooking(id, bdto);
         return b != null ? new ResponseEntity<>("Booking updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Booking could not be updated.", HttpStatus.CONFLICT);
@@ -171,14 +172,14 @@ public class AdminController {
     }
 
     @PostMapping("/airports")
-    public ResponseEntity<String> addAirport(@RequestBody Airport a) {
+    public ResponseEntity<String> addAirport(@Validated @RequestBody Airport a) {
         Airport airport = as.addAirport(a);
         return airport != null ? new ResponseEntity<>("Airport added.", HttpStatus.OK)
                 : new ResponseEntity<>("Airport could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/airports/{airportCode}")
-    public ResponseEntity<String> updateAirport(@PathVariable String airportCode, @RequestBody Airport a) {
+    public ResponseEntity<String> updateAirport(@PathVariable String airportCode, @Validated @RequestBody Airport a) {
         Airport airport = as.updateAirport(airportCode, a);
         return airport != null ? new ResponseEntity<>("Airport updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Airport could not be updated.", HttpStatus.CONFLICT);
@@ -201,14 +202,14 @@ public class AdminController {
 
 
     @PostMapping("/travelers")
-    public ResponseEntity<String> addTraveler(@RequestBody User t) {
+    public ResponseEntity<String> addTraveler(@Validated @RequestBody User t) {
         User traveler = as.addTraveler(t);
         return traveler != null ? new ResponseEntity<>("Traveler added.", HttpStatus.OK)
                 : new ResponseEntity<>("Traveler could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/travelers/{id}")
-    public ResponseEntity<String> updateTraveler(@PathVariable int id, @RequestBody User t) {
+    public ResponseEntity<String> updateTraveler(@PathVariable int id, @Validated @RequestBody User t) {
         User traveler = as.updateTraveler(id, t);
         return traveler != null ? new ResponseEntity<>("Traveler updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Traveler could not be updated.", HttpStatus.CONFLICT);
@@ -231,14 +232,14 @@ public class AdminController {
 
 
     @PostMapping("/employees")
-    public ResponseEntity<String> addEmployee(@RequestBody User e) {
+    public ResponseEntity<String> addEmployee(@Validated @RequestBody User e) {
         User employee = as.addEmployee(e);
         return employee != null ? new ResponseEntity<>("Employee added.", HttpStatus.OK)
                 : new ResponseEntity<>("Employee could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/employees/{id}")
-    public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody User e) {
+    public ResponseEntity<String> updateEmployee(@PathVariable int id, @Validated @RequestBody User e) {
         User employee = as.updateEmployee(id, e);
         return employee != null ? new ResponseEntity<>("Employee updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Employee could not be updated.", HttpStatus.CONFLICT);

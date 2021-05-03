@@ -1,5 +1,8 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity(name = "booking_payment")
@@ -12,6 +15,7 @@ public class BookingPayment {
     @OneToOne
     @MapsId
     @JoinColumn(name = "booking_id")
+    @JsonBackReference
     private Booking booking;
 
     private String stripeId;
@@ -29,6 +33,14 @@ public class BookingPayment {
         this.booking = booking;
         this.stripeId = stripeId;
         this.refunded = b;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Booking getBooking() {

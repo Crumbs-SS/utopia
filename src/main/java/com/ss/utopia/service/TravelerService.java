@@ -92,7 +92,7 @@ public class TravelerService {
             BookingPayment bookingPayment = bookingPaymentRepository.
                     getBookingByStripeId(booking.getConfirmationCode());
 
-            booking.setIsActive(false);
+            booking.setActive(false);
             bookingPayment.setRefunded(true);
 
             bookingRepository.save(booking);

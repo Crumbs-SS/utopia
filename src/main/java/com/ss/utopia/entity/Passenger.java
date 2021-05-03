@@ -1,8 +1,13 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ss.utopia.dto.BookingDTO;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Entity(name = "passenger")
@@ -12,16 +17,34 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @ManyToOne
     @JsonIgnore
     private Booking booking;
 
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String givenName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String familyName;
 
+
     @Column(name = "dob")
+    @NotNull
     private Date date;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String gender;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String address;
 
     public Passenger(Booking booking, String givenName, String familyName, Date date, String gender, String address) {

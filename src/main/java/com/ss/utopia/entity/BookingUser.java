@@ -1,5 +1,8 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -17,6 +20,7 @@ public class BookingUser {
 
     @MapsId("bookingId")
     @ManyToOne
+    @JsonBackReference
     private Booking booking;
 
     public BookingUser(User user, Booking booking) {
@@ -31,6 +35,14 @@ public class BookingUser {
         this.id = new BookingUserID(user.getId(), booking.getId());
         this.booking = booking;
         this.user = user;
+    }
+
+    public BookingUserID getId() {
+        return id;
+    }
+
+    public void setId(BookingUserID id) {
+        this.id = id;
     }
 
     public User getUser() {
