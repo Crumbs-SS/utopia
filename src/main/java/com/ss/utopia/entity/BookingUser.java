@@ -1,6 +1,7 @@
 package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.EmbeddedId;
@@ -8,9 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
-@Entity
+@Entity(name = "booking_user")
 public class BookingUser {
 
+    @JsonIgnore
     @EmbeddedId
     private BookingUserID id;
 
@@ -23,18 +25,13 @@ public class BookingUser {
     @JsonBackReference
     private Booking booking;
 
-    public BookingUser(User user, Booking booking) {
-        this.user = user;
-        this.booking = booking;
-    }
-
     public BookingUser() {
     }
 
     public BookingUser(Booking booking, User user) {
-        this.id = new BookingUserID(user.getId(), booking.getId());
         this.booking = booking;
         this.user = user;
+        this.id = new BookingUserID(user.getId(), booking.getId());
     }
 
     public BookingUserID getId() {

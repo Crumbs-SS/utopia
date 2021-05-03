@@ -92,7 +92,6 @@ public class MockUtil {
                 "123456"
         );
     }
-
     public static Airport getAirport(){
         return new Airport("TES", "TEST");
     }
@@ -100,6 +99,7 @@ public class MockUtil {
     public static Optional<Airport> getAirportOptional(){
         return Optional.of(getAirport());
     }
+
 
     public static List<Booking> getBookings(){
         List<Booking> bookings = new ArrayList<>();
@@ -123,6 +123,10 @@ public class MockUtil {
         String confirmationCode = "CONFIRMATION-" + (getBookings().size() + 1);
         return new Booking(true, confirmationCode);
     }
+    public static Booking getCancelledBooking(){
+        String confirmationCode = "CONFIRMATION-" + (getBookings().size() + 1);
+        return new Booking(false, confirmationCode);
+    }
 
     public static BookingDTO getBookingDTO(){
         return new BookingDTO();
@@ -133,9 +137,12 @@ public class MockUtil {
     }
 
     public static Flight getFlight(){
-        return new Flight("time", 20, 20.53F);
+        Flight flight = new Flight("time", 20, 20.53F);
+        flight.setRoute(new Route(new Airport(), new Airport()));
+        flight.setAirplane(new Airplane());
+        return flight;
     }
-
+    public static Flight getFlight2(){return new Flight(0);}
     public static FlightBooking getFlightBooking(){
        FlightBooking flightBooking = new FlightBooking(getFlightBookingID());
        flightBooking.setBooking(getBooking());
@@ -155,6 +162,7 @@ public class MockUtil {
     public static Optional<Booking> getBookingOptional(){
         return Optional.of(getBooking());
     }
+    public static Optional<Booking> getCancelledBookingOptional(){ return Optional.of(getCancelledBooking()); }
 
     public static Optional<BookingPayment> getBookingPaymentOptional(){
         return Optional.of(getBookingPayment());
@@ -167,6 +175,5 @@ public class MockUtil {
     private static FlightBookingID getFlightBookingID(){
         return new FlightBookingID(getFlight().getId(), getBooking().getId());
     }
-
 
 }

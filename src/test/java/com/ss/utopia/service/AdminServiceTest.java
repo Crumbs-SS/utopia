@@ -1,15 +1,8 @@
 package com.ss.utopia.service;
 
-import com.ss.utopia.entity.Airport;
-import com.ss.utopia.entity.Flight;
-import com.ss.utopia.entity.Passenger;
-import com.ss.utopia.entity.Seats;
+import com.ss.utopia.entity.*;
 import com.ss.utopia.repo.*;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -116,13 +109,13 @@ class AdminServiceTest {
         Mockito.doNothing().when(flightRepository).deleteById(0);
         assertNotNull(adminService.deleteFlight(0));
     }
-
+/*
     @Test
     void deleteSeats() {
         Mockito.doNothing().when(seatRepository).deleteById(0);
         assertNotNull(adminService.deleteSeats(0));
     }
-
+*/
     @Test
     void deleteEmployee() {
         Mockito.doNothing().when(userRepository).deleteEmployee(0);
@@ -141,12 +134,15 @@ class AdminServiceTest {
         Optional<Flight> flightOptional = MockUtil.getFlightOptional();
         Flight flight = flightOptional.get();
 
-        Mockito.when(flightRepository.findById(0))
+        Mockito.when(flightRepository.findById(1))
                 .thenReturn(flightOptional);
+        Mockito.when(airplaneRepository.findById(null)).thenReturn(Optional.of(new Airplane()));
+        Mockito.when(airportRepository.findById(null)).thenReturn(Optional.of(new Airport()));
+        Mockito.when(routeRepository.findById(null)).thenReturn(Optional.of(new Route()));
         Mockito.when(flightRepository.save(flight))
                 .thenReturn(flight);
 
-        assertEquals(flight, adminService.updateFlight(0, flight));
+        assertEquals(flight, adminService.updateFlight(1, flight));
     }
 
     @Test
@@ -177,21 +173,73 @@ class AdminServiceTest {
 
     @Test
     void updateTraveler() {
+        Optional<User> travelerOptional = MockUtil.getUserOptional();
+        User traveler = travelerOptional.get();
+        Mockito.when(userRepository.findById(0))
+                .thenReturn(travelerOptional);
+        Mockito.when(userRepository.save(traveler))
+                .thenReturn(traveler);
+
+        assertEquals(traveler, adminService.updateTraveler(0, traveler));
     }
 
     @Test
     void updateEmployee() {
+        Optional<User> employeeOptional = MockUtil.getUserOptional();
+        User employee = employeeOptional.get();
+        Mockito.when(userRepository.findById(0))
+                .thenReturn(employeeOptional);
+        Mockito.when(userRepository.save(employee))
+                .thenReturn(employee);
+
+        assertEquals(employee, adminService.updateEmployee(0, employee));
     }
 
     @Test
     void updatePassenger() {
+        Optional<Passenger> passengerOptional = MockUtil.getPassengerOptional();
+        Passenger passenger = passengerOptional.get();
+        Mockito.when(passengerRepository.findById(0))
+                .thenReturn(passengerOptional);
+        Mockito.when(passengerRepository.save(passenger))
+                .thenReturn(passenger);
+
+        assertEquals(passenger, adminService.updatePassenger(0, passenger));
     }
 
     @Test
     void cancelBooking() {
+        Optional<Booking> bookingOptional = MockUtil.getBookingOptional();
+        Optional<BookingPayment> bookingPaymentOptional = MockUtil.getBookingPaymentOptional();
+        Booking booking = bookingOptional.get();
+        BookingPayment bookingPayment = bookingPaymentOptional.get();
+
+        Mockito.when(bookingRepository.findById(1)).
+                thenReturn(bookingOptional);
+        Mockito.when(bookingPaymentRepository.findById(1)).
+                thenReturn(bookingPaymentOptional);
+        Mockito.when(bookingRepository.save(booking)).
+                thenReturn(booking);
+
+        assertNotEquals(booking.getActive(), adminService.cancelBooking(1).getActive());
     }
 
     @Test
     void uncancelBooking() {
+        Optional<Booking> cancelledBookingOptional = MockUtil.getCancelledBookingOptional();
+        Optional<BookingPayment> bookingPaymentOptional = MockUtil.getBookingPaymentOptional();
+        Booking cancelledBooking = cancelledBookingOptional.get();
+        BookingPayment bookingPayment = bookingPaymentOptional.get();
+
+        Mockito.when(bookingRepository.findById(1)).
+                thenReturn(cancelledBookingOptional);
+        Mockito.when(bookingPaymentRepository.findById(1)).
+                thenReturn(bookingPaymentOptional);
+        Mockito.when(bookingRepository.save(cancelledBooking)).
+                thenReturn(cancelledBooking);
+
+
+        assertNotEquals(cancelledBooking.getActive(), adminService.uncancelBooking(1).getActive());
     }
+
 }

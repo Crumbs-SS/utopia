@@ -122,6 +122,10 @@ public class AdminService {
     public Airport addAirport(Airport airport) {
         try {
             if (null == airport.getCityName()) { return null; }
+            try {
+                Airport old = airportRepository.findById(airport.getAirportCode()).orElseThrow();
+                return null;
+            } catch (Exception exc) {}
             return airportRepository.save(airport);
         } catch (Exception e) {
             e.printStackTrace();
@@ -214,6 +218,10 @@ public class AdminService {
                 }
             } else {
                 bdto.getBookingGuest().setBooking(booking);
+                if (null == bdto.getBookingGuest().getContactEmail()
+                        || null == bdto.getBookingGuest().getContactPhone()) {
+                    throw new IllegalArgumentException();
+                }
                 bookingGuestRepository.save(bdto.getBookingGuest());
             }
             return booking;
@@ -259,7 +267,7 @@ public class AdminService {
             return null;
         }
     }
-
+/*
     public String deleteSeats(Integer id) {
         try {
             seatRepository.deleteById(id);
@@ -270,7 +278,7 @@ public class AdminService {
             return null;
         }
     }
-
+*/
     public String deleteEmployee(Integer id) {
         try {
             userRepository.deleteEmployee(id);
@@ -295,19 +303,8 @@ public class AdminService {
 
     public String deleteBooking(int id) {
         try {
-            Booking b = new Booking();
-            b.setId(id);
+            Booking b = bookingRepository.findById(id).orElseThrow();
             bookingRepository.delete(b);
-            /*
-            bookingPaymentRepository.delete(new BookingPayment(b, null, true));
-            flightBookingRepository.delete(new FlightBooking(null, b));
-            bookingAgentRepository.delete(new BookingAgent(b, null));
-            bookingUserRepository.delete(new BookingUser(null, b));
-            bookingGuestRepository.delete(new BookingGuest(b, null, null));
-            passengerRepository.delete(new Passenger(b, null, null,
-                    null, null, null));
-
-             */
             return "Booking deleted.";
         } catch (Exception e) {
             e.printStackTrace();
@@ -318,8 +315,7 @@ public class AdminService {
 
     public String deletePassenger(int id) {
         try {
-            Passenger p = new Passenger();
-            p.setId(id);
+            Passenger p = passengerRepository.findById(id).orElseThrow();
             passengerRepository.delete(p);
             return "Passenger deleted.";
         } catch (Exception e) {
@@ -329,17 +325,27 @@ public class AdminService {
         }
     }
 
-
     //update methods
     public Flight updateFlight(int id, Flight flight) {
         try {
             flight.setId(id);
             Flight temp = flightRepository.findById(flight.getId()).get();
-            if (flight.getRoute() == null) flight.setRoute(temp.getRoute());
-            if (flight.getAirplane() == null) flight.setAirplane(temp.getAirplane());
-            if (flight.getDepartTime() == null) flight.setDepartTime(temp.getDepartTime());
-            if (flight.getReservedSeats() == null) flight.setReservedSeats(temp.getReservedSeats());
-            if (flight.getSeatPrice() == null) flight.setSeatPrice(temp.getSeatPrice());
+
+            // just to check if the string was a valid datetime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            //LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+            Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
+            flight.setAirplane(airplane);
+            Airport ori = airportRepository
+                    .findById(flight.getRoute().getOriAirport().getAirportCode()).orElseThrow();
+            Airport des = airportRepository
+                    .findById(flight.getRoute().getDesAirport().getAirportCode()).orElseThrow();
+            Route route = routeRepository.findByOriAirportAndDesAirport(ori, des);
+            if (null == route) {
+                route = routeRepository.save(new Route(ori, des));
+            }
+            flight.setRoute(route);
             return flightRepository.save(flight);
         } catch (Exception e) {
             e.printStackTrace();
@@ -366,6 +372,7 @@ public class AdminService {
 
     public Airport updateAirport(String airportCode, Airport a) {
         try {
+            if (null == a.getCityName()) { return null; }
             a.setAirportCode(airportCode);
             airportRepository.findById(a.getAirportCode()).get();
             return airportRepository.save(a);
@@ -439,10 +446,15 @@ public class AdminService {
 
             if (null != bdto.getUserId() || null != bdto.getBookingGuest()) {
                 // delete the old booking_agent/user/guest
-                bookingAgentRepository.delete(new BookingAgent(booking, null));
-                bookingUserRepository.delete(new BookingUser(null, booking));
-                bookingGuestRepository.delete(new BookingGuest(booking,
-                        null, null));
+                BookingAgent ba = bookingAgentRepository.getBookingAgentFromBooking(oldB);
+                BookingUser bu = bookingUserRepository.getBookingUserFromBooking(oldB);
+                BookingGuest bg = bookingGuestRepository.getBookingGuestByBooking(oldB);
+                if (null != ba) { bookingAgentRepository.delete(ba); }
+                if (null != bu) { bookingUserRepository.delete(bu); }
+                if (null != bg) { bookingGuestRepository.delete(bg); }
+                ba = bookingAgentRepository.getBookingAgentFromBooking(oldB);
+                bu = bookingUserRepository.getBookingUserFromBooking(oldB);
+                bg = bookingGuestRepository.getBookingGuestByBooking(oldB);
                 if (null != bdto.getUserId()) {
                     User user = userRepository.findById(bdto.getUserId()).get();
                     UserRole role = user.getUserRole();
@@ -451,10 +463,14 @@ public class AdminService {
                     } else if (role.getName().equals("AGENT")) {
                         bookingAgentRepository.save(new BookingAgent(booking, user));
                     } else if (role.getName().equals("CUSTOMER")) {
-                        bookingUserRepository.save(new BookingUser(user, booking));
+                        bookingUserRepository.save(new BookingUser(booking, user));
                     }
                 } else {
                     bdto.getBookingGuest().setBooking(booking);
+                    if (null == bdto.getBookingGuest().getContactEmail()
+                            || null == bdto.getBookingGuest().getContactPhone()) {
+                        throw new IllegalArgumentException();
+                    }
                     bookingGuestRepository.save(bdto.getBookingGuest());
                 }
             }
@@ -470,6 +486,7 @@ public class AdminService {
         try {
             p.setId(id);
             Passenger oldP = passengerRepository.findById(p.getId()).get();
+            p.setBooking(oldP.getBooking());
             if (p.getGivenName() == null) { p.setGivenName(oldP.getGivenName()); }
             if (p.getFamilyName() == null) { p.setFamilyName(oldP.getFamilyName()); }
             if (p.getDate() == null) { p.setDate(oldP.getDate()); }

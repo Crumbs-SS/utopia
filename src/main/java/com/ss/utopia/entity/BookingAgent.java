@@ -1,6 +1,7 @@
 package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.EmbeddedId;
@@ -11,6 +12,7 @@ import javax.persistence.MapsId;
 @Entity(name = "booking_agent")
 public class BookingAgent {
 
+    @JsonIgnore
     @EmbeddedId
     private BookingAgentID id;
 
