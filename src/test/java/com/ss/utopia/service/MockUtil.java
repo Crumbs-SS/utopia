@@ -120,7 +120,7 @@ public class MockUtil {
 
 
     public static Booking getBooking(){
-        String confirmationCode = "CONFIRMATION-" + (getBookings().size() + 1);
+        String confirmationCode = "TEST-CONFIRMATION-" + (getBookings().size() + 1);
         return new Booking(true, confirmationCode);
     }
     public static Booking getCancelledBooking(){

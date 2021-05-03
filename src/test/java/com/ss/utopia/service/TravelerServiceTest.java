@@ -54,7 +54,7 @@ class TravelerServiceTest {
         BookingPayment bookingPayment = MockUtil.getBookingPayment();
 
         Mockito.when(bookingRepository.findById(0)).thenReturn(MockUtil.getBookingOptional());
-        Mockito.when(bookingPaymentRepository.getBookingByStripeId(booking.getConfirmationCode()))
+        Mockito.when(bookingPaymentRepository.getBookingPaymentByConfirmationCode(booking.getConfirmationCode()))
                 .thenReturn(bookingPayment);
         Mockito.when(bookingRepository.save(booking)).thenReturn(booking);
         Mockito.when(bookingPaymentRepository.save(bookingPayment)).thenReturn(bookingPayment);

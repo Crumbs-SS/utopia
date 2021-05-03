@@ -9,8 +9,10 @@ import com.ss.utopia.service.TravelerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -42,14 +44,14 @@ public class TravelerController {
                 : new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
-    @PutMapping("/bookings/{id}")
+    @PutMapping("/bookings/cancel/{id}")
     public ResponseEntity<String> cancelBooking(@PathVariable String id){
         return travelerService.cancelBooking(id) ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @PostMapping("/bookings")
-    public ResponseEntity<Booking> addBooking(@RequestBody BookingDTO bookingDTO){
+    public ResponseEntity<Booking> addBooking(@Validated @RequestBody BookingDTO bookingDTO){
         Booking booking = travelerService.addBooking(bookingDTO);
 
         return booking != null ? new ResponseEntity<>(booking, HttpStatus.CREATED)
