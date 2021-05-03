@@ -110,13 +110,13 @@ class AdminServiceTest {
         Mockito.doNothing().when(flightRepository).deleteById(0);
         assertNotNull(adminService.deleteFlight(0));
     }
-
+/*
     @Test
     void deleteSeats() {
         Mockito.doNothing().when(seatRepository).deleteById(0);
         assertNotNull(adminService.deleteSeats(0));
     }
-
+*/
     @Test
     void deleteEmployee() {
         Mockito.doNothing().when(userRepository).deleteEmployee(0);
