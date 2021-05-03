@@ -437,8 +437,9 @@ public class AdminService {
             FlightBooking flightBooking =
                     flightBookingRepository.findByBooking(oldB).get(0);
             if (null != bdto.getFlightId()) {
-                Flight f = flightRepository.findById(bdto.getFlightId()).orElseThrow();
-                flightBooking.setFlight(f);
+                Flight f = flightRepository.findById(bdto.getFlightId()).get();
+                flightBookingRepository.delete(flightBooking);
+                flightBooking = new FlightBooking(f, oldB);
             }
 
             booking = bookingRepository.save(booking);
