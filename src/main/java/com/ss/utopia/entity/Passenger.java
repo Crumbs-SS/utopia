@@ -1,9 +1,6 @@
 package com.ss.utopia.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ss.utopia.dto.BookingDTO;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,7 +16,6 @@ public class Passenger {
 
 
     @ManyToOne
-    @JsonIgnore
     @JsonBackReference
     private Booking booking;
 
