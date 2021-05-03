@@ -4,16 +4,12 @@ import com.ss.utopia.entity.Flight;
 import com.ss.utopia.entity.Seats;
 import com.ss.utopia.repo.FlightRepository;
 import com.ss.utopia.repo.SeatRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
@@ -22,7 +18,57 @@ public class EmployeeService {
     @Autowired FlightRepository flightRepository;
     @Autowired SeatRepository seatRepository;
 
-    public ResponseEntity<Flight> getFlight(Integer id){
+    public Flight getFlight(Integer id){
+        try {
+            return flightRepository.findById(id).get();
+        } catch(Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public List<Seats> getSeats() {
+        try {
+            return seatRepository.findAll();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+    public Flight updateFlight(int id, Flight flight) {
+        try {
+            flight.setId(id);
+            Flight temp = flightRepository.findById(flight.getId()).get();
+            if (flight.getRoute() == null) flight.setRoute(temp.getRoute());
+            if (flight.getAirplane() == null) flight.setAirplane(temp.getAirplane());
+            if (flight.getDepartTime() == null) flight.setDepartTime(temp.getDepartTime());
+            if (flight.getReservedSeats() == null) flight.setReservedSeats(temp.getReservedSeats());
+            if (flight.getSeatPrice() == null) flight.setSeatPrice(temp.getSeatPrice());
+            return flightRepository.save(flight);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Seats updateSeats(int id, Seats seat) {
+        try {
+            seat.setId(id);
+            Seats temp = seatRepository.findById(seat.getId()).get();
+            seat.setFlight(temp.getFlight());
+            if (seat.getFirst() == null) seat.setFirst(temp.getFirst());
+            if (seat.getBusiness() == null) seat.setBusiness(temp.getBusiness());
+            if (seat.getEconomy() == null) seat.setEconomy(temp.getEconomy());
+            return seatRepository.save(seat);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+/*
+public ResponseEntity<Flight> getFlight(Integer id){
         try {
             return new ResponseEntity(flightRepository.findById(id).get(), HttpStatus.OK);
         } catch(Exception e){
@@ -36,7 +82,6 @@ public class EmployeeService {
             return new ResponseEntity(e.getCause(), HttpStatus.CONFLICT);
         }
     }
-
     public ResponseEntity updateFlight(Flight flight)  {
 
         try {
@@ -89,6 +134,6 @@ public class EmployeeService {
         }
 
         return new ResponseEntity("Update Successful", HttpStatus.OK);
-    }
+    }*/
 
 }
