@@ -123,6 +123,10 @@ public class MockUtil {
         String confirmationCode = "CONFIRMATION-" + (getBookings().size() + 1);
         return new Booking(true, confirmationCode);
     }
+    public static Booking getCancelledBooking(){
+        String confirmationCode = "CONFIRMATION-" + (getBookings().size() + 1);
+        return new Booking(false, confirmationCode);
+    }
 
     public static BookingDTO getBookingDTO(){
         return new BookingDTO();
@@ -135,7 +139,7 @@ public class MockUtil {
     public static Flight getFlight(){
         return new Flight("time", 20, 20.53F);
     }
-
+    public static Flight getFlight2(){return new Flight(0);}
     public static FlightBooking getFlightBooking(){
        FlightBooking flightBooking = new FlightBooking(getFlightBookingID());
        flightBooking.setBooking(getBooking());
@@ -155,6 +159,7 @@ public class MockUtil {
     public static Optional<Booking> getBookingOptional(){
         return Optional.of(getBooking());
     }
+    public static Optional<Booking> getCancelledBookingOptional(){ return Optional.of(getCancelledBooking()); }
 
     public static Optional<BookingPayment> getBookingPaymentOptional(){
         return Optional.of(getBookingPayment());
