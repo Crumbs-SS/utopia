@@ -1,19 +1,53 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "booking")
 public class Booking {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Boolean isActive;
     private String confirmationCode;
+
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "booking")
+    private List<FlightBooking> flightBookings = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<Passenger> passengers = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingUser> bookingUsers = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingAgent> bookingAgents = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private BookingPayment bookingPayment;
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private BookingGuest bookingGuest;
+
+    public Booking(){}
 
     public Booking(Boolean isActive, String confirmationCode) {
         this.isActive = isActive;
         this.confirmationCode = confirmationCode;
     }
-
-    public Booking(){}
 
     public Booking(Integer bookingId) {
         this.id = bookingId;
@@ -27,12 +61,12 @@ public class Booking {
         this.id = id;
     }
 
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public String getConfirmationCode() {
@@ -43,23 +77,51 @@ public class Booking {
         this.confirmationCode = confirmationCode;
     }
 
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", isActive=" + isActive +
-                ", confirmationCode='" + confirmationCode + '\'' +
-                '}';
+    public List<FlightBooking> getFlightBookings() {
+        return flightBookings;
     }
 
-    public static Booking toObject(ResultSet rs) throws SQLException {
-        Integer bookingId = rs.getInt("id");
-        Boolean isActive = rs.getBoolean("is_active");
-        String confirmationCode = rs.getString("confirmation_code");
+    public void setFlightBookings(List<FlightBooking> flightBookings) {
+        this.flightBookings = flightBookings;
+    }
 
-        Booking booking = new Booking(isActive, confirmationCode);
-        booking.setId(bookingId);
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
 
-        return booking;
+    public void setPassengers(List<Passenger> passengers) {
+        this.passengers = passengers;
+    }
+
+    public List<BookingUser> getBookingUsers() {
+        return bookingUsers;
+    }
+
+    public void setBookingUsers(List<BookingUser> bookingUsers) {
+        this.bookingUsers = bookingUsers;
+    }
+
+    public List<BookingAgent> getBookingAgents() {
+        return bookingAgents;
+    }
+
+    public void setBookingAgents(List<BookingAgent> bookingAgents) {
+        this.bookingAgents = bookingAgents;
+    }
+
+    public BookingPayment getBookingPayment() {
+        return bookingPayment;
+    }
+
+    public void setBookingPayment(BookingPayment bookingPayment) {
+        this.bookingPayment = bookingPayment;
+    }
+
+    public BookingGuest getBookingGuest() {
+        return bookingGuest;
+    }
+
+    public void setBookingGuest(BookingGuest bookingGuest) {
+        this.bookingGuest = bookingGuest;
     }
 }

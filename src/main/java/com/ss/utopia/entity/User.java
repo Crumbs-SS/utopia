@@ -1,18 +1,65 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "user")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    @JsonBackReference
     private UserRole userRole;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<BookingUser> bookingUsers = new ArrayList<>();
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String givenName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String familyName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String username;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String email;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String password;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String phone;
+
+    public User(){
+
+    }
 
     public User(String givenName, String familyName, String username, String email, String password, String phone) {
         this.givenName = givenName;
@@ -91,36 +138,11 @@ public class User {
         this.phone = phone;
     }
 
-    public static User toObject(ResultSet rs) throws SQLException {
-        String givenName = rs.getString("given_name");
-        String familyName = rs.getString("family_name");
-        String username = rs.getString("username");
-        String email = rs.getString("email");
-        String password = rs.getString("password");
-        String phone = rs.getString("phone");
-        String roleName = rs.getString("name");
-        Integer userRoleId = rs.getInt("role_id");
-        Integer id = rs.getInt("user.id");
-
-        User user = new User(givenName, familyName,
-                username, email, password, phone);
-        user.setId(id);
-
-        user.setUserRole(new UserRole(userRoleId, roleName));
-        return user;
+    public List<BookingUser> getBookingUsers() {
+        return bookingUsers;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userRole=" + userRole +
-                ", givenName='" + givenName + '\'' +
-                ", familyName='" + familyName + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+    public void setBookingUsers(List<BookingUser> bookingUsers) {
+        this.bookingUsers = bookingUsers;
     }
 }

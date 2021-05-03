@@ -1,15 +1,46 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+
+@Entity(name = "booking_agent")
 public class BookingAgent {
+
+    @JsonIgnore
+    @EmbeddedId
+    private BookingAgentID id;
+
+    @JsonBackReference
+    @MapsId("bookingId")
+    @ManyToOne
     private Booking booking;
+
+    @MapsId("agentId")
+    @ManyToOne
     private User agent;
 
+
+    public BookingAgent(){
+
+    }
     public BookingAgent(Booking booking, User agent) {
         this.booking = booking;
         this.agent = agent;
+        this.id = new BookingAgentID(agent.getId(), booking.getId());
+    }
+
+    public BookingAgentID getId() {
+        return id;
+    }
+
+    public void setId(BookingAgentID id) {
+        this.id = id;
     }
 
     public Booking getBooking() {
@@ -26,24 +57,5 @@ public class BookingAgent {
 
     public void setAgent(User agent) {
         this.agent = agent;
-    }
-
-    @Override
-    public String toString() {
-        return "BookingAgent{" +
-                "booking=" + booking +
-                ", agent=" + agent +
-                '}';
-    }
-
-    public static BookingAgent toObject(ResultSet rs) throws SQLException {
-        Integer bookingId = rs.getInt("booking_id");
-        Integer agentId = rs.getInt("agent_id");
-
-        Booking booking = new Booking(bookingId);
-        User agent = new User(agentId);
-
-        BookingAgent bookingAgent = new BookingAgent(booking, agent);
-        return bookingAgent;
     }
 }

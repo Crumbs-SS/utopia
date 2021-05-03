@@ -1,21 +1,59 @@
 package com.ss.utopia.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity(name = "flight")
 public class Flight {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne
+    @NotNull
+    @Valid
     private Route route;
+
+    @ManyToOne
+    @NotNull
+    @Valid
     private Airplane airplane;
 
-   // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS",timezone="PST")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS")
+    // STILL NOT ACCOUNTING FOR BAD STRINGS
+    @Column(name = "departure_time")
+    @NotNull
     private String departTime;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
+    private List<FlightBooking> flightBookings = new ArrayList<>();
+
+    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JsonManagedReference
+    @NotNull
+    @Valid
+    private Seats seats;
+
+    @NotNull
+    @Min(value = 0)
     private Integer reservedSeats;
+    @NotNull
+    @Min(value = 0)
     private Float seatPrice;
 
+    public Flight(){
+
+    }
 
     public Flight(String departTime, Integer reservedSeats, Float seatPrice) {
         this.departTime = departTime;
@@ -59,6 +97,22 @@ public class Flight {
         this.departTime = departTime;
     }
 
+    public List<FlightBooking> getFlightBookings() {
+        return flightBookings;
+    }
+
+    public void setFlightBookings(List<FlightBooking> flightBookings) {
+        this.flightBookings = flightBookings;
+    }
+
+    public Seats getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Seats seats) {
+        this.seats = seats;
+    }
+
     public Integer getReservedSeats() {
         return reservedSeats;
     }
@@ -73,34 +127,5 @@ public class Flight {
 
     public void setSeatPrice(Float seatPrice) {
         this.seatPrice = seatPrice;
-    }
-
-    @Override
-    public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", route=" + route +
-                ", airplane=" + airplane +
-                ", departTime=" + departTime +
-                ", reservedSeats=" + reservedSeats +
-                ", seatPrice=" + seatPrice +
-                '}';
-    }
-
-    public static Flight toObject(ResultSet rs) throws SQLException {
-        Integer flightId = rs.getInt("id");
-        Integer routeId = rs.getInt("route_id");
-        Integer airplaneID = rs.getInt("airplane_id");
-        String departureTime = rs.getString("departure_time");
-
-        Integer reservedSeats = rs.getInt("reserved_seats");
-        Float seatPrice = rs.getFloat("seat_price");
-
-        Flight flight = new Flight(departureTime, reservedSeats, seatPrice);
-        flight.setId(flightId);
-        flight.setRoute(new Route(routeId));
-        flight.setAirplane(new Airplane(airplaneID));
-
-        return flight;
     }
 }

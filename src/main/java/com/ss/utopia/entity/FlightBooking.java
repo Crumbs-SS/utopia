@@ -1,15 +1,47 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+
+@Entity(name = "flight_bookings")
 public class FlightBooking {
-    private Flight flight;
-    private Booking booking;
 
-    public FlightBooking(Flight flight, Booking booking) {
+    @JsonIgnore
+    @EmbeddedId
+    private FlightBookingID id;
+
+    @MapsId("flightId")
+    @ManyToOne
+    Flight flight;
+
+    @JsonBackReference
+    @MapsId("bookingId")
+    @ManyToOne
+    Booking booking;
+
+    public FlightBooking() {
+
+    }
+
+    public FlightBooking(Flight flight, Booking booking){
         this.flight = flight;
         this.booking = booking;
+        this.id = new FlightBookingID(flight.getId(), booking.getId());
+    }
+
+    public FlightBooking(FlightBookingID flightBookingID) {
+        this.id = flightBookingID;
+    }
+
+    public void setId(FlightBookingID id) {
+        this.id = id;
+    }
+
+    public FlightBookingID getId() {
+        return id;
     }
 
     public Flight getFlight() {
@@ -18,6 +50,7 @@ public class FlightBooking {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+        this.id.setFlightId(flight.getId());
     }
 
     public Booking getBooking() {
@@ -26,25 +59,6 @@ public class FlightBooking {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
-    }
-
-    public static FlightBooking toObject(ResultSet rs) throws SQLException{
-
-
-        Integer flightId = rs.getInt("flight_id");
-        Integer bookingId = rs.getInt("booking_id");
-
-        Flight flight = new Flight(flightId);
-        Booking booking = new Booking(bookingId);
-
-        return new FlightBooking(flight, booking);
-    }
-
-    @Override
-    public String toString() {
-        return "FlightBookings{" +
-                "flight=" + flight +
-                ", booking=" + booking +
-                '}';
+        this.id.setBookingId(booking.getId());
     }
 }

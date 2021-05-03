@@ -1,16 +1,37 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity(name = "user_role")
 public class UserRole {
+
+    @Id
     private Integer id;
     private String name;
+
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRole")
+    List<User> users = new ArrayList<>();
 
     public UserRole(Integer id, String name) {
         this.name = name;
         this.id = id;
+    }
+
+    public UserRole() {
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Integer getId() {
@@ -29,17 +50,4 @@ public class UserRole {
         this.name = name;
     }
 
-    public static UserRole toObject(ResultSet rs) throws SQLException {
-        Integer userRoleId = rs.getInt("id");
-        String userRoleName = rs.getString("name");
-        return new UserRole(userRoleId, userRoleName);
-    }
-
-    @Override
-    public String toString() {
-        return "UserRole{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

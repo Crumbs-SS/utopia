@@ -1,11 +1,29 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "airplane")
 public class Airplane {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name="type_id")
     private AirplaneType airplaneType;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplane")
+    @JsonIgnore
+    private List<Flight> flights = new ArrayList<>();
 
     public Airplane() {}
     public Airplane(AirplaneType airplaneType) {
@@ -31,24 +49,12 @@ public class Airplane {
         this.airplaneType = airplaneType;
     }
 
-    public static Airplane toObject(ResultSet rs) throws SQLException {
-        Integer airplaneID = rs.getInt("id");
-        Integer maxCapacity = rs.getInt("max_capacity");
-        Integer airplaneTypeID = rs.getInt("type_id");
-
-        AirplaneType airplaneType = new AirplaneType(maxCapacity);
-        airplaneType.setId(airplaneTypeID);
-
-        Airplane airplane = new Airplane(airplaneType);
-        airplane.setId(airplaneID);
-
-        return airplane;
+    public List<Flight> getFlights() {
+        return flights;
     }
 
-    @Override
-    public String toString() {
-        return airplaneType != null ?  "AirplaneID: " + id + "AirplaneType: "
-                + airplaneType.toString() : "AirplaneID: " + id;
+    public void setFlights(List<Flight> flights) {
+        this.flights = flights;
     }
 }
 

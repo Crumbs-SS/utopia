@@ -1,27 +1,60 @@
 package com.ss.utopia.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
+@Entity(name = "passenger")
 public class Passenger {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
+    @ManyToOne
+    @JsonBackReference
     private Booking booking;
-    private String given_name;
-    private String family_name;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
+    private String givenName;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)
+    private String familyName;
+
+
+    @Column(name = "dob")
+    @NotNull
     private Date date;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String gender;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String address;
 
-    public Passenger() {}
-    public Passenger(Booking booking, String given_name, String family_name, Date date, String gender, String address) {
+    public Passenger(Booking booking, String givenName, String familyName, Date date, String gender, String address) {
         this.booking = booking;
-        this.given_name = given_name;
-        this.family_name = family_name;
+        this.givenName = givenName;
+        this.familyName = familyName;
         this.date = date;
         this.gender = gender;
         this.address = address;
+    }
+
+    public Passenger() {
+
     }
 
     public Integer getId() {
@@ -40,20 +73,20 @@ public class Passenger {
         this.booking = booking;
     }
 
-    public String getGiven_name() {
-        return given_name;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setGiven_name(String given_name) {
-        this.given_name = given_name;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
-    public String getFamily_name() {
-        return family_name;
+    public String getFamilyName() {
+        return familyName;
     }
 
-    public void setFamily_name(String family_name) {
-        this.family_name = family_name;
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
     }
 
     public Date getDate() {
@@ -80,31 +113,4 @@ public class Passenger {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "Passenger{" +
-                "id=" + id +
-                ", booking=" + booking +
-                ", given_name='" + given_name + '\'' +
-                ", family_name='" + family_name + '\'' +
-                ", date=" + date +
-                ", gender='" + gender + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
-
-    public static Passenger toObject(ResultSet rs) throws SQLException {
-        Integer id = rs.getInt("id");
-        Integer bookingId = rs.getInt("booking_id");
-        String givenName = rs.getString("given_name");
-        String familyName = rs.getString("family_name");
-        Date date = rs.getDate("dob");
-        String gender = rs.getString("gender");
-        String address = rs.getString("address");
-
-        Booking booking = new Booking(bookingId);
-        Passenger passenger = new Passenger(booking, givenName, familyName, date, gender, address);
-        passenger.setId(id);
-        return passenger;
-    }
 }

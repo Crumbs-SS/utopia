@@ -1,18 +1,46 @@
 package com.ss.utopia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.*;
 
+@Entity(name = "booking_payment")
 public class BookingPayment {
+    @Id
+    @Column(name = "booking_id")
+    private Integer id;
+
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "booking_id")
+    @JsonBackReference
     private Booking booking;
+
     private String stripeId;
     private Boolean refunded;
 
-    public BookingPayment(String stripeId, Boolean refunded, Booking booking) {
+    public BookingPayment(){
+    }
+
+    public BookingPayment(String stripeId, Boolean refunded) {
         this.stripeId = stripeId;
         this.refunded = refunded;
+    }
+
+    public BookingPayment(Booking booking, String stripeId, boolean b) {
         this.booking = booking;
+        this.stripeId = stripeId;
+        this.refunded = b;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Booking getBooking() {
@@ -39,24 +67,4 @@ public class BookingPayment {
         this.refunded = refunded;
     }
 
-    @Override
-    public String toString() {
-        return "BookingPayment{" +
-                "booking=" + booking +
-                ", stripeId='" + stripeId + '\'' +
-                ", refunded=" + refunded +
-                '}';
-    }
-
-    public static BookingPayment toObject(ResultSet rs) throws SQLException {
-        Integer bookingId = rs.getInt("booking_id");
-        String stripeId = rs.getString("stripe_id");
-        Boolean refunded = rs.getBoolean("refunded");
-
-        Booking booking = new Booking(bookingId);
-        BookingPayment bookingPayment = new BookingPayment(stripeId, refunded, booking);
-        bookingPayment.setBooking(booking);
-
-        return bookingPayment;
-    }
 }

@@ -1,590 +1,543 @@
 package com.ss.utopia.service;
 
-
-import com.ss.utopia.dao.*;
 import com.ss.utopia.dto.BookingDTO;
 import com.ss.utopia.entity.*;
+import com.ss.utopia.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
 public class AdminService {
-    @Autowired
-    FlightDAO fdao;
-    @Autowired
-    RouteDAO rdao;
-    @Autowired
-    AirplaneDAO airplaneDAO;
-    @Autowired
-    AirportDAO airportDAO;
-    @Autowired
-    UserDAO udao;
-    @Autowired
-    SeatDAO seatDAO;
-    @Autowired
-    BookingDAO bdao;
-    @Autowired
-    BookingUserDAO bookingUserDAO;
-    @Autowired
-    BookingAgentDAO bookingAgentDAO;
-    @Autowired
-    BookingGuestDAO bookingGuestDAO;
-    @Autowired
-    BookingPaymentDAO bookingPaymentDAO;
-    @Autowired
-    FlightBookingDAO flightBookingDAO;
-    @Autowired
-    PassengerDAO passengerDAO;
+
+    @Autowired AirportRepository airportRepository;
+    @Autowired FlightRepository flightRepository;
+    @Autowired AirplaneRepository airplaneRepository;
+    @Autowired RouteRepository routeRepository;
+    @Autowired SeatRepository seatRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired BookingRepository bookingRepository;
+    @Autowired BookingPaymentRepository bookingPaymentRepository;
+    @Autowired FlightBookingRepository flightBookingRepository;
+    @Autowired PassengerRepository passengerRepository;
+    @Autowired BookingUserRepository bookingUserRepository;
+    @Autowired BookingAgentRepository bookingAgentRepository;
+    @Autowired BookingGuestRepository bookingGuestRepository;
+
+    final int ADMIN = 1;
+    final int TRAVELER = 2;
+    final int EMPLOYEE = 3;
+
+    //Read Methods
+    public List<Airport> getAirports() {
+        try {
+            return airportRepository.findAll();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
 
     public List<Flight> getFlights() {
-        List<Flight> flights = null;
         try {
-            flights = fdao.getAllFlights();
-
-            for (Flight flight : flights) {
-                flight.setRoute(rdao.getRouteById(flight.getRoute().getId()));
-                flight.setAirplane(airplaneDAO.getAirplaneById(flight.getAirplane().getId()));
-            }
+            return flightRepository.findAll();
         } catch (Exception e) {
-            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
-        return flights;
+
     }
 
-    // TODO
-    public String addFlight(Flight f) {
+    public List<Seats> getSeats() {
         try {
-            int result = fdao.addFlight(f);
-            if (result == 1) {
-                return "flight added";
-            }
-            return "flight not added";
+            return seatRepository.findAll();
         } catch (Exception e) {
-            e.printStackTrace();
-            return "flight not added";
-        }
-    }
-
-    public String updateFlight(Flight f)  {
-        try {
-            Flight existingFlight = fdao.getFlightFromId(f.getId());
-            if(f.getRoute() == null) { f.setRoute(existingFlight.getRoute()); }
-            if(f.getAirplane() == null) { f.setAirplane(existingFlight.getAirplane()); }
-            if(f.getDepartTime() == null) { f.setDepartTime(existingFlight.getDepartTime()); }
-            if(f.getReservedSeats() == null) { f.setReservedSeats(existingFlight.getReservedSeats()); }
-            if(f.getSeatPrice() == null) { f.setSeatPrice(existingFlight.getSeatPrice()); }
-            int result = fdao.updateFlight(f);
-            if (result == 1) {
-                return "updated flight with id=" + f.getId();
-            }
-            return "could not updated flight with id=" + f.getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "could not updated flight with id=" + f.getId();
-        }
-    }
-
-    public String deleteFlight(int flightId) {
-        try {
-            int result = fdao.deleteFlight(new Flight(flightId));
-            if (result == 1) {
-                return "Flight with id=" + flightId + " deleted.";
-            }
-            return "Flight could not be deleted";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Flight could not be deleted";
-        }
-    }
-
-    public List<Airport> getAirports() {
-        List<Airport> airports = null;
-        try {
-            airports = airportDAO.getAllAirports();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return airports;
-    }
-
-    public String addAirport(Airport a) {
-        try {
-            int result = airportDAO.addAirport(a);
-            if (result == 1) {
-                return "Airport with code=" + a.getAirportCode() + " added.";
-            }
-            return "Airport could not be added.";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Airport could not be added.";
-        }
-    }
-
-    public String updateAirport(Airport a) {
-        try {
-            if (a.getCityName() == null) {
-                Airport existingAirport = airportDAO.getAirportByAirportCode(a.getAirportCode());
-                a.setCityName(existingAirport.getCityName());
-            }
-            int result = airportDAO.updateAirport(a);
-            if (result == 1) {
-                return "Airport with code=" + a.getAirportCode() + " updated.";
-            }
-            return "Airport could not be updated.";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Airport could not be updated.";
-        }
-    }
-
-    public String deleteAirport(String airportId) {
-        try {
-            int result = airportDAO.deleteAirport(new Airport(airportId, "ph"));
-            if (result == 1) {
-                return "Airport with id=" + airportId + " deleted.";
-            }
-            return "Airport could not be deleted";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Airport could not be deleted";
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
     }
 
     public List<User> getTravelers() {
-        List<User> users = null;
         try {
-            users = udao.getAllTravelers();
+            return userRepository.getTravellers();
         } catch (Exception e) {
-            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
-        return users;
     }
-
-    public String addTraveler(User t) {
-        try {
-            int result = udao.addUser(t);
-            if (result == 1) {
-                return "Traveler added.";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Traveler could not be added.";
-    }
-
-    public String updateTraveler(User t) {
-        try {
-            User existingTraveler = udao.getUserById(t.getId());
-            if (t.getGivenName() == null) { t.setGivenName(existingTraveler.getGivenName()); }
-            if (t.getFamilyName() == null) { t.setFamilyName(existingTraveler.getFamilyName()); }
-            if (t.getUsername() == null) { t.setUsername(existingTraveler.getUsername()); }
-            if (t.getEmail() == null) { t.setEmail(existingTraveler.getEmail()); }
-            if (t.getPassword() == null) { t.setPassword(existingTraveler.getPassword()); }
-            if (t.getPhone() == null) { t.setPhone(existingTraveler.getPhone()); }
-            int result = udao.updateUser(t);
-            if (result == 1) {
-                return "Traveler updated.";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Traveler could not be updated.";
-    }
-
-    public String deleteTraveler(int id) {
-        try {
-            int result = udao.deleteUser(new User(id));
-            if (result == 1) {
-                return "deleted Traveler with id=" + id;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Could not delete Traveler with id=" + id;
-    }
-
 
     public List<User> getEmployees() {
-        List<User> users = null;
         try {
-            users = udao.getAllEmployees();
+            return userRepository.getEmployees();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
-
-    public String addEmployee(User e) {
-        try {
-            int result = udao.addUser(e);
-            if (result == 1) {
-                return "Employee added.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "Employee could not be added.";
-    }
-
-    public String updateEmployee(User e) {
-        try {
-            User existingEmployee = udao.getUserById(e.getId());
-            if (e.getGivenName() == null) { e.setGivenName(existingEmployee.getGivenName()); }
-            if (e.getFamilyName() == null) { e.setFamilyName(existingEmployee.getFamilyName()); }
-            if (e.getUsername() == null) { e.setUsername(existingEmployee.getUsername()); }
-            if (e.getEmail() == null) { e.setEmail(existingEmployee.getEmail()); }
-            if (e.getPassword() == null) { e.setPassword(existingEmployee.getPassword()); }
-            if (e.getPhone() == null) { e.setPhone(existingEmployee.getPhone()); }
-            int result = udao.updateUser(e);
-            if (result == 1) {
-                return "Employee updated.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "Employee could not be updated.";
-    }
-
-    public String deleteEmployee(int id) {
-        try {
-            int result = udao.deleteUser(new User(id));
-            if (result == 1) {
-                return "deleted Employee with id=" + id;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Could not delete Employee with id=" + id;
-    }
-
-    public List<Seat> getSeats() {
-        List<Seat> seats = null;
-        try {
-            seats = seatDAO.getAllSeats();
-
-            for (Seat seat : seats) {
-                Flight temp = fdao.getFlightFromId(seat.getFlight().getId());
-                temp.setRoute(rdao.getRouteById(seat.getFlight().getId()));
-                temp.setAirplane(airplaneDAO.getAirplaneById(seat.getFlight().getId()));
-                seat.setFlight(temp);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return seats;
-    }
-
-    public void addSeats(Seat seat) {
-        try {
-            seatDAO.addSeat(seat);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateSeats(Seat seat) {
-        try{
-            Seat temp = seatDAO.getSeatFromId(seat.getFlight().getId());
-            if(temp == null) throw new Exception("id was not provided");
-
-            if(seat.getFirst() == null)
-                seat.setFirst(temp.getFirst());
-
-            if(seat.getBusiness() == null)
-                seat.setBusiness(temp.getBusiness());
-
-            if(seat.getEconomy() == null)
-                seat.setEconomy(temp.getEconomy());
-
-            seatDAO.updateSeat(seat);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteSeats(int id) {
-        try {
-            seatDAO.deleteSeat(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
     }
 
     public List<Booking> getBookings() {
-        List<Booking> bookings = null;
         try {
-            bookings = bdao.getAllBookings();
+            return bookingRepository.findAll();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
 
-            /*
-            for (Booking b : bookings) {
+    public List<Passenger> getPassengers() {
+        try {
+            return passengerRepository.findAll();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
 
-            }
-            */
+    public Passenger getPassengerById(int id) {
+        try {
+            return passengerRepository.findById(id).orElseThrow();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public List<Passenger> getPassengersByBookingId(int id) {
+        try {
+            Booking b = new Booking();
+            b.setId(id);
+            return passengerRepository.getPassengersByBooking(b);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    //Add Methods
+    public Airport addAirport(Airport airport) {
+        try {
+            if (null == airport.getCityName()) { return null; }
+            try {
+                Airport old = airportRepository.findById(airport.getAirportCode()).orElseThrow();
+                return null;
+            } catch (Exception exc) {}
+            return airportRepository.save(airport);
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
-        return bookings;
     }
 
-    public String addBooking(BookingDTO bdto){
+    public Flight addFlight(Flight flight) {
+        try {
+            // just to check if the string was a valid datetime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+            Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
+            flight.setAirplane(airplane);
+            Airport ori = airportRepository
+                    .findById(flight.getRoute().getOriAirport().getAirportCode()).orElseThrow();
+            Airport des = airportRepository
+                    .findById(flight.getRoute().getDesAirport().getAirportCode()).orElseThrow();
+            Route route = routeRepository.findByOriAirportAndDesAirport(ori, des);
+            if (null == route) {
+                route = routeRepository.save(new Route(ori, des));
+            }
+            flight.setRoute(route);
+            return flightRepository.save(flight);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+/*
+    public Seats addSeats(int flightId, Seats seat) {
+        try {
+            Flight f = flightRepository.findById(flightId).orElseThrow();
+            seat.setFlight(f);
+            return seatRepository.save(seat);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+*/
+    public User addEmployee(User user) {
+        try {
+            user.setUserRole(new UserRole(EMPLOYEE, "ph"));
+            return userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public User addTraveler(User user) {
+        try {
+            user.setUserRole(new UserRole(TRAVELER, "ph"));
+            return userRepository.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Booking addBooking(BookingDTO bdto) {
         try {
             if (null == bdto.getUserId() && null == bdto.getBookingGuest()) {
-                return "Could not add booking. No booking agent/user or guest specified.";
+                return null;
             }
-            int amountOfBookings = bdao.getAllBookings().size();
-            Booking booking = new Booking(true, "CONFIRMATION-" + amountOfBookings);
-            Flight flight = fdao.getFlightFromId(bdto.getFlightId());
-            String stripeId = bdto.getStripeId();
+            String confirmationCode = "CONFIRMATION-" + (bookingRepository.findAll().size() + 1);
+            Booking booking = bookingRepository.saveAndFlush(new Booking(true, confirmationCode));
 
-            bdao.addBooking(booking);
-            booking = bdao.getBookingByCode(booking.getConfirmationCode());
-
-            bookingPaymentDAO.addBookingPayment(new BookingPayment(stripeId, false, booking));
-            flightBookingDAO.addFlightBooking(new FlightBooking(flight, booking));
+            Flight flight = flightRepository.findById(bdto.getFlightId()).orElseThrow();
+            BookingPayment bookingPayment = new BookingPayment(booking, bdto.getStripeId(), false);
+            bookingPaymentRepository.save(bookingPayment);
+            flightBookingRepository.save(new FlightBooking(flight, booking));
 
             if (null != bdto.getUserId()) {
-                User user = udao.getUserById(bdto.getUserId());
+                User user = userRepository.findById(bdto.getUserId()).orElseThrow();
                 UserRole role = user.getUserRole();
-                if (role.getName().equals("ADMIN")) { throw new IllegalArgumentException(); }
-                else if (role.getName().equals("AGENT")) {
-                    bookingAgentDAO.addBookingAgent(new BookingAgent(booking, user));
+                if (ADMIN == role.getId()) {
+                    throw new IllegalArgumentException();
+                } else if (EMPLOYEE == role.getId()) {
+                    bookingAgentRepository.save(new BookingAgent(booking, user));
+                } else if (TRAVELER == role.getId()) {
+                    bookingUserRepository.save(new BookingUser(booking, user));
                 }
-                else if (role.getName().equals("CUSTOMER")) {
-                    bookingUserDAO.addBookingUser(new BookingUser(user, booking));
-                }
-            }
-            else {
+            } else {
                 bdto.getBookingGuest().setBooking(booking);
-                bookingGuestDAO.addBookingGuest(bdto.getBookingGuest());
+                if (null == bdto.getBookingGuest().getContactEmail()
+                        || null == bdto.getBookingGuest().getContactPhone()) {
+                    throw new IllegalArgumentException();
+                }
+                bookingGuestRepository.save(bdto.getBookingGuest());
             }
-
-            return "Booking added.";
-        }catch(Exception e){
+            return booking;
+        } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "Booking could not be added.";
+            return null;
         }
     }
 
-    public String updateBooking(BookingDTO bdto) {
-        // let them change associated flight
-        // let them change stripe_id
-        // let them change confirmation code
-        // let them change booking agent/user/guest
+    public Passenger addPassenger(int id, Passenger p) {
         try {
-            Booking existingBooking = bdao.getBookingById(bdto.getId());
-            if (null == existingBooking) {
-                return "Could not update booking.";
-            }
-            Booking booking = new Booking();
-            booking.setId(existingBooking.getId());
-            booking.setIsActive(existingBooking.getIsActive());
-            if (null != bdto.getConfirmationCode()) {
-                booking.setConfirmationCode(bdto.getConfirmationCode());
-            }
-            else {
-                booking.setConfirmationCode(existingBooking.getConfirmationCode());
-            }
-
-            BookingPayment bookingPayment =
-                    bookingPaymentDAO.getBookingPaymentByBooking(existingBooking);
-            if (null != bdto.getStripeId()) {
-                bookingPayment.setStripeId(bdto.getStripeId());
-            }
-            FlightBooking flightBooking =
-                    flightBookingDAO.getFlightBookingByBooking(existingBooking);
-            if (null != bdto.getFlightId()) {
-                Flight f = fdao.getFlightFromId(bdto.getFlightId());
-                flightBooking.setFlight(f);
-            }
-
-            bdao.addBooking(booking);
-            bookingPaymentDAO.addBookingPayment(bookingPayment);
-            flightBookingDAO.addFlightBooking(flightBooking);
-
-            if (null != bdto.getUserId() || null != bdto.getBookingGuest()) {
-                // delete the old booking_agent/user/guest
-                bookingAgentDAO.deleteBookingAgent(new BookingAgent(booking, null));
-                bookingUserDAO.deleteBookingUser(new BookingUser(null, booking));
-                bookingGuestDAO.deleteBookingGuest(new BookingGuest(booking,
-                        null, null));
-                if (null != bdto.getUserId()) {
-                    User user = udao.getUserById(bdto.getUserId());
-                    UserRole role = user.getUserRole();
-                    if (role.getName().equals("ADMIN")) { throw new IllegalArgumentException(); }
-                    else if (role.getName().equals("AGENT")) {
-                        bookingAgentDAO.addBookingAgent(new BookingAgent(booking, user));
-                    }
-                    else if (role.getName().equals("CUSTOMER")) {
-                        bookingUserDAO.addBookingUser(new BookingUser(user, booking));
-                    }
-                }
-                else {
-                    bdto.getBookingGuest().setBooking(booking);
-                    bookingGuestDAO.addBookingGuest(bdto.getBookingGuest());
-                }
-            }
-            return "Booking updated.";
-        }catch(Exception e){
+            Booking b = bookingRepository.findById(id).orElseThrow();
+            p.setBooking(b);
+            return passengerRepository.save(p);
+        } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "Could not update booking.";
+            return null;
+        }
+    }
+
+
+    //Delete Methods
+    public String deleteAirport(String id) {
+        try {
+            airportRepository.deleteById(id);
+            return "Airport " + id + " deleted.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public String deleteFlight(Integer id) {
+        try {
+            flightRepository.deleteById(id);
+            return "Flight " + id + " deleted.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+/*
+    public String deleteSeats(Integer id) {
+        try {
+            seatRepository.deleteById(id);
+            return "Seats with id=" + id + " deleted.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+*/
+    public String deleteEmployee(Integer id) {
+        try {
+            userRepository.deleteEmployee(id);
+            return "Employee " + id + " deleted.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public String deleteTraveler(Integer id) {
+        try {
+            userRepository.deleteTraveler(id);
+            return "Traveler " + id + " deleted.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
     }
 
     public String deleteBooking(int id) {
         try {
-            Booking b = new Booking();
-            b.setId(id);
-            bdao.deleteBooking(b);
-            bookingPaymentDAO.deleteBookingPayment(new BookingPayment(null, null, b));
-            flightBookingDAO.deleteFlightBooking(new FlightBooking(null, b));
-            bookingAgentDAO.deleteBookingAgent(new BookingAgent(b, null));
-            bookingUserDAO.deleteBookingUser(new BookingUser(null, b));
-            bookingGuestDAO.deleteBookingGuest(new BookingGuest(b, null, null));
-            passengerDAO.deletePassenger(new Passenger(b, null, null,
-                    null, null, null));
+            Booking b = bookingRepository.findById(id).orElseThrow();
+            bookingRepository.delete(b);
             return "Booking deleted.";
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "Could not delete booking.";
+            return null;
         }
-    }
-
-    public String cancelBooking(int id) {
-        try {
-            Booking b = bdao.getBookingById(id);
-            if (!b.getIsActive()) {
-                return "Booking is already canceled.";
-            }
-            BookingPayment bp = bookingPaymentDAO.getBookingPaymentByBooking(b);
-            b.setIsActive(false);
-            bp.setRefunded(true);
-            bdao.updateBooking(b);
-            bookingPaymentDAO.updateBookingPayment(bp);
-            return "Booking is canceled.";
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "Could not cancel booking.";
-        }
-    }
-
-    public String uncancelBooking(int id) {
-        try {
-            Booking b = bdao.getBookingById(id);
-            if (b.getIsActive()) {
-                return "Booking is already active.";
-            }
-            BookingPayment bp = bookingPaymentDAO.getBookingPaymentByBooking(b);
-            b.setIsActive(true);
-            bp.setRefunded(false);
-            bdao.updateBooking(b);
-            bookingPaymentDAO.updateBookingPayment(bp);
-            return "Booking is no longer canceled.";
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return "Could not uncancel booking.";
-        }
-    }
-
-    public List<Passenger> getPassengers() {
-        List<Passenger> passengers = null;
-        try {
-            passengers = passengerDAO.getAllPassengers();
-            for (Passenger p : passengers) {
-                Booking b = bdao.getBookingById(p.getBooking().getId());
-                p.setBooking(b);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return passengers;
-    }
-
-    public Passenger getPassengerById(int id) {
-        Passenger p = null;
-        try {
-            p = passengerDAO.getPassenger(id);
-            Booking b = bdao.getBookingById(p.getBooking().getId());
-            p.setBooking(b);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return p;
-    }
-
-    public List<Passenger> getPassengersByBookingId(int id) {
-        List<Passenger> passengers = null;
-        try {
-            Booking b = bdao.getBookingById(id);
-            passengers = passengerDAO.getPassengersByBooking(b);
-            for (Passenger p : passengers) {
-                p.setBooking(b);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return passengers;
-    }
-
-    public String addPassenger(Passenger p) {
-        try {
-            int status = passengerDAO.addPassenger(p);
-            if (1 == status) {
-                return "Passenger added.";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return "Could not add passenger.";
-    }
-
-    public String updatePassenger(Passenger p) {
-        try {
-            Passenger existingPassenger = passengerDAO.getPassenger(p.getId());
-            if (p.getGiven_name() == null) { p.setGiven_name(existingPassenger.getGiven_name()); }
-            if (p.getFamily_name() == null) { p.setFamily_name(existingPassenger.getFamily_name()); }
-            if (p.getDate() == null) { p.setDate(existingPassenger.getDate()); }
-            if (p.getGender() == null) { p.setGender(existingPassenger.getGender()); }
-            if (p.getAddress() == null) { p.setAddress(existingPassenger.getAddress()); }
-            int result = passengerDAO.updatePassenger(p);
-            if (result == 1) {
-                return "Passenger updated.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "Passenger could not be updated.";
     }
 
     public String deletePassenger(int id) {
         try {
-            Passenger p = new Passenger();
-            p.setId(id);
-            int status = passengerDAO.deletePassenger(p);
-            if (1 == status) {
-                return "Passenger deleted.";
-            }
+            Passenger p = passengerRepository.findById(id).orElseThrow();
+            passengerRepository.delete(p);
+            return "Passenger deleted.";
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
         }
-        return "Could not delete Passenger.";
+    }
+
+    //update methods
+    public Flight updateFlight(int id, Flight flight) {
+        try {
+            flight.setId(id);
+            Flight temp = flightRepository.findById(flight.getId()).get();
+
+            // just to check if the string was a valid datetime
+            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            //LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
+
+            Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
+            flight.setAirplane(airplane);
+            Airport ori = airportRepository
+                    .findById(flight.getRoute().getOriAirport().getAirportCode()).orElseThrow();
+            Airport des = airportRepository
+                    .findById(flight.getRoute().getDesAirport().getAirportCode()).orElseThrow();
+            Route route = routeRepository.findByOriAirportAndDesAirport(ori, des);
+            if (null == route) {
+                route = routeRepository.save(new Route(ori, des));
+            }
+            flight.setRoute(route);
+            return flightRepository.save(flight);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Seats updateSeats(int id, Seats seat) {
+        try {
+            seat.setId(id);
+            Seats temp = seatRepository.findById(seat.getId()).get();
+            seat.setFlight(temp.getFlight());
+            if (seat.getFirst() == null) seat.setFirst(temp.getFirst());
+            if (seat.getBusiness() == null) seat.setBusiness(temp.getBusiness());
+            if (seat.getEconomy() == null) seat.setEconomy(temp.getEconomy());
+            return seatRepository.save(seat);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Airport updateAirport(String airportCode, Airport a) {
+        try {
+            if (null == a.getCityName()) { return null; }
+            a.setAirportCode(airportCode);
+            airportRepository.findById(a.getAirportCode()).get();
+            return airportRepository.save(a);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public User updateTraveler(int id, User t) {
+        return getUser(id, t, TRAVELER);
+    }
+
+    private User getUser(int id, User t, int traveler) {
+        try {
+            t.setId(id);
+            t.setUserRole(new UserRole(traveler, "ph"));
+            User oldT = userRepository.findById(t.getId()).get();
+            if (t.getGivenName() == null) { t.setGivenName(oldT.getGivenName()); }
+            if (t.getFamilyName() == null) {  t.setFamilyName(oldT.getFamilyName()); }
+            if (t.getUsername() == null) { t.setUsername(oldT.getUsername());  }
+            if (t.getEmail() == null) { t.setEmail(oldT.getEmail()); }
+            if (t.getPassword() == null) { t.setPassword(oldT.getPassword()); }
+            if (t.getPhone() == null) { t.setPhone(oldT.getPhone()); }
+            return userRepository.save(t);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public User updateEmployee(int id, User e) {
+        return getUser(id, e, EMPLOYEE);
+    }
+
+
+    public Booking updateBooking(int id, BookingDTO bdto) {
+        // let them change associated flight
+        // let them change stripe_id
+        // let them change confirmation code
+        // let them change booking agent/user/guest
+        try {
+            bdto.setId(id);
+            Booking oldB = bookingRepository.findById(bdto.getId()).get();
+            Booking booking = new Booking();
+            booking.setId(oldB.getId());
+            booking.setActive(oldB.getActive());
+            if (null != bdto.getConfirmationCode()) {
+                booking.setConfirmationCode(bdto.getConfirmationCode());
+            } else {
+                booking.setConfirmationCode(oldB.getConfirmationCode());
+            }
+
+            BookingPayment bookingPayment =
+                    bookingPaymentRepository.getBookingPaymentByBooking(oldB);
+            if (null != bdto.getStripeId()) {
+                bookingPayment.setStripeId(bdto.getStripeId());
+            }
+            FlightBooking flightBooking =
+                    flightBookingRepository.findByBooking(oldB).get(0);
+            if (null != bdto.getFlightId()) {
+                Flight f = flightRepository.findById(bdto.getFlightId()).orElseThrow();
+                flightBooking.setFlight(f);
+            }
+
+            booking = bookingRepository.save(booking);
+            bookingPaymentRepository.save(bookingPayment);
+            flightBookingRepository.save(flightBooking);
+
+            if (null != bdto.getUserId() || null != bdto.getBookingGuest()) {
+                // delete the old booking_agent/user/guest
+                BookingAgent ba = bookingAgentRepository.getBookingAgentFromBooking(oldB);
+                BookingUser bu = bookingUserRepository.getBookingUserFromBooking(oldB);
+                BookingGuest bg = bookingGuestRepository.getBookingGuestByBooking(oldB);
+                if (null != ba) { bookingAgentRepository.delete(ba); }
+                if (null != bu) { bookingUserRepository.delete(bu); }
+                if (null != bg) { bookingGuestRepository.delete(bg); }
+                ba = bookingAgentRepository.getBookingAgentFromBooking(oldB);
+                bu = bookingUserRepository.getBookingUserFromBooking(oldB);
+                bg = bookingGuestRepository.getBookingGuestByBooking(oldB);
+                if (null != bdto.getUserId()) {
+                    User user = userRepository.findById(bdto.getUserId()).get();
+                    UserRole role = user.getUserRole();
+                    if (ADMIN == role.getId()) {
+                        throw new IllegalArgumentException();
+                    } else if (EMPLOYEE == role.getId()) {
+                        bookingAgentRepository.save(new BookingAgent(booking, user));
+                    } else if (TRAVELER == role.getId()) {
+                        bookingUserRepository.save(new BookingUser(booking, user));
+                    }
+                } else {
+                    bdto.getBookingGuest().setBooking(booking);
+                    if (null == bdto.getBookingGuest().getContactEmail()
+                            || null == bdto.getBookingGuest().getContactPhone()) {
+                        throw new IllegalArgumentException();
+                    }
+                    bookingGuestRepository.save(bdto.getBookingGuest());
+                }
+            }
+            return booking;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Passenger updatePassenger(int id, Passenger p) {
+        try {
+            p.setId(id);
+            Passenger oldP = passengerRepository.findById(p.getId()).get();
+            p.setBooking(oldP.getBooking());
+            if (p.getGivenName() == null) { p.setGivenName(oldP.getGivenName()); }
+            if (p.getFamilyName() == null) { p.setFamilyName(oldP.getFamilyName()); }
+            if (p.getDate() == null) { p.setDate(oldP.getDate()); }
+            if (p.getGender() == null) { p.setGender(oldP.getGender()); }
+            if (p.getAddress() == null) { p.setAddress(oldP.getAddress()); }
+            return passengerRepository.save(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    // Activate/Cancel Booking methods
+    public Booking cancelBooking(int id) {
+        try {
+            Booking b = bookingRepository.findById(id).get();
+            if (!b.getActive()) {
+                return b;
+            }
+            BookingPayment bp = bookingPaymentRepository.findById(id).get();
+            b.setActive(false);
+            bp.setRefunded(true);
+            b = bookingRepository.save(b);
+            bookingPaymentRepository.save(bp);
+            return b;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
+    }
+
+    public Booking uncancelBooking(int id) {
+        try {
+            Booking b = bookingRepository.findById(id).get();
+            if (b.getActive()) {
+                return b;
+            }
+            BookingPayment bp = bookingPaymentRepository.findById(id).get();
+            b.setActive(true);
+            bp.setRefunded(false);
+            b = bookingRepository.save(b);
+            bookingPaymentRepository.save(bp);
+            return b;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        }
     }
 }
+

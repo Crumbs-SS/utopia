@@ -1,11 +1,41 @@
 package com.ss.utopia.entity;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "airport")
 public class Airport {
+
+    @Id
+    @Column(name = "iata_id")
+    @NotNull
+    @NotBlank
+    @Size(min = 3, max = 3)
     private String airportCode;
+
+    @Column(name = "city")
+    @NotBlank
+    @Size(min = 1, max = 45)
     private String cityName;
+
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "oriAirport")
+    List<Route> originRoutes = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "desAirport")
+    List<Route> destinationRoutes = new ArrayList<>();
+
+    public Airport(){
+
+    }
 
     public Airport(String airportCode, String cityName) {
         this.airportCode = airportCode;
@@ -28,15 +58,19 @@ public class Airport {
         return cityName;
     }
 
-    public static Airport toObject(ResultSet rs) throws SQLException {
-        String iataCode = rs.getString("iata_id");
-        String city = rs.getString("city");
-
-        return new Airport(iataCode, city);
+    public List<Route> getOriginRoutes() {
+        return originRoutes;
     }
 
-    @Override
-    public String toString() {
-        return airportCode + ": " + cityName;
+    public void setOriginRoutes(List<Route> originRoutes) {
+        this.originRoutes = originRoutes;
+    }
+
+    public List<Route> getDestinationRoutes() {
+        return destinationRoutes;
+    }
+
+    public void setDestinationRoutes(List<Route> destinationRoutes) {
+        this.destinationRoutes = destinationRoutes;
     }
 }
