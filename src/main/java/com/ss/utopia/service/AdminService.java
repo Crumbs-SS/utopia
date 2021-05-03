@@ -334,10 +334,7 @@ public class AdminService {
 
             // just to check if the string was a valid datetime
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime timestamp = LocalDateTime.parse(flight.getDepartTime(), formatter);
-
-
-            Seats seats = seatRepository.findById(id).orElseThrow();
+            LocalDateTime.parse(flight.getDepartTime(), formatter);
 
             Airplane airplane = airplaneRepository.findById(flight.getAirplane().getId()).orElseThrow();
             flight.setAirplane(airplane);
