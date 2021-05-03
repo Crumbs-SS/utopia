@@ -88,7 +88,7 @@ public class TravelerService {
             Integer id = Integer.parseInt(bookingId);
             Booking booking = bookingRepository.findById(id).orElseThrow();
             BookingPayment bookingPayment = bookingPaymentRepository.
-                    getBookingByStripeId(booking.getConfirmationCode());
+                    getBookingPaymentByConfirmationCode(booking.getConfirmationCode());
 
             booking.setActive(false);
             bookingPayment.setRefunded(true);
@@ -115,7 +115,7 @@ public class TravelerService {
                 passenger.setBooking(booking);
                 passengerRepository.save(passenger);
             }catch(Exception e){
-
+                e.printStackTrace();
             }
 
         }

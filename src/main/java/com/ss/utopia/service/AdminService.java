@@ -30,6 +30,7 @@ public class AdminService {
     @Autowired BookingAgentRepository bookingAgentRepository;
     @Autowired BookingGuestRepository bookingGuestRepository;
 
+    final int ADMIN = 1;
     final int TRAVELER = 2;
     final int EMPLOYEE = 3;
 
@@ -209,11 +210,11 @@ public class AdminService {
             if (null != bdto.getUserId()) {
                 User user = userRepository.findById(bdto.getUserId()).orElseThrow();
                 UserRole role = user.getUserRole();
-                if (role.getName().equals("ADMIN")) {
+                if (ADMIN == role.getId()) {
                     throw new IllegalArgumentException();
-                } else if (role.getName().equals("AGENT")) {
+                } else if (EMPLOYEE == role.getId()) {
                     bookingAgentRepository.save(new BookingAgent(booking, user));
-                } else if (role.getName().equals("CUSTOMER")) {
+                } else if (TRAVELER == role.getId()) {
                     bookingUserRepository.save(new BookingUser(booking, user));
                 }
             } else {
@@ -387,10 +388,6 @@ public class AdminService {
         return getUser(id, t, TRAVELER);
     }
 
-    public User updateEmployee(int id, User e) {
-        return getUser(id, e, EMPLOYEE);
-    }
-
     private User getUser(int id, User t, int traveler) {
         try {
             t.setId(id);
@@ -409,6 +406,11 @@ public class AdminService {
             return null;
         }
     }
+
+    public User updateEmployee(int id, User e) {
+        return getUser(id, e, EMPLOYEE);
+    }
+
 
     public Booking updateBooking(int id, BookingDTO bdto) {
         // let them change associated flight
@@ -458,11 +460,11 @@ public class AdminService {
                 if (null != bdto.getUserId()) {
                     User user = userRepository.findById(bdto.getUserId()).get();
                     UserRole role = user.getUserRole();
-                    if (role.getName().equals("ADMIN")) {
+                    if (ADMIN == role.getId()) {
                         throw new IllegalArgumentException();
-                    } else if (role.getName().equals("AGENT")) {
+                    } else if (EMPLOYEE == role.getId()) {
                         bookingAgentRepository.save(new BookingAgent(booking, user));
-                    } else if (role.getName().equals("CUSTOMER")) {
+                    } else if (TRAVELER == role.getId()) {
                         bookingUserRepository.save(new BookingUser(booking, user));
                     }
                 } else {

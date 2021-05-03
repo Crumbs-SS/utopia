@@ -14,4 +14,7 @@ public interface BookingPaymentRepository extends JpaRepository<BookingPayment, 
 
     @Query("SELECT bp FROM booking_payment bp WHERE bp.stripeId = ?1")
     BookingPayment getBookingByStripeId(String stripeId);
+
+    @Query("SELECT bp FROM booking_payment bp WHERE bp.booking.confirmationCode = ?1")
+    BookingPayment getBookingPaymentByConfirmationCode(String confirmationCode);
 }
