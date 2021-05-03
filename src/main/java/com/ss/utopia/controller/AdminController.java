@@ -144,14 +144,14 @@ public class AdminController {
     }
 
     @PostMapping("/passengers/bookings/{bookingId}")
-    public ResponseEntity<String> addPassenger(@PathVariable int bookingId, @RequestBody Passenger p) {
+    public ResponseEntity<String> addPassenger(@PathVariable int bookingId, @Validated @RequestBody Passenger p) {
         Passenger passenger = as.addPassenger(bookingId, p);
         return passenger != null ? new ResponseEntity<>("Passenger added.", HttpStatus.OK)
                 : new ResponseEntity<>("Passenger could not be added.", HttpStatus.CONFLICT);
     }
 
     @PutMapping("/passengers/{id}")
-    public ResponseEntity<String> updatePassenger(@PathVariable int id, @RequestBody Passenger p) {
+    public ResponseEntity<String> updatePassenger(@PathVariable int id, @Validated @RequestBody Passenger p) {
         Passenger passenger = as.updatePassenger(id, p);
         return passenger != null ? new ResponseEntity<>("Passenger updated.", HttpStatus.OK)
                 : new ResponseEntity<>("Passenger could not be updated.", HttpStatus.CONFLICT);
